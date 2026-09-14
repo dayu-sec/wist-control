@@ -4,6 +4,14 @@ version = "0.1.2" #@gxl:set(version)
 edition = "2024"
 license = "Apache-2.0"
 rust-version = "1.85"
+authors = ["wist Dev Team"]
+description = "Reusable Control domain model for the wist agent control plane and center governance"
+repository = "https://github.com/dayu-sec/wist-control"
+homepage = "https://github.com/dayu-sec/wist-control"
+documentation = "https://docs.rs/wist-control"
+readme = "README.md"
+keywords = ["wist", "control", "model", "agent", "governance"]
+categories = ["data-structures", "config"]
 
 [dependencies]
 jumo-derive = "0.1"
