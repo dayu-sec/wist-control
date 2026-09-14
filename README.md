@@ -2,8 +2,14 @@
 
 Control-domain model: agent control plane and center governance.
 
-[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![crates.io](https://img.shields.io/crates/v/wist-control.svg)](https://crates.io/crates/wist-control)
+[![docs.rs](https://img.shields.io/docsrs/wist-control/latest.svg)](https://docs.rs/wist-control)
+[![Downloads](https://img.shields.io/crates/d/wist-control.svg)](https://crates.io/crates/wist-control)
 [![MSRV](https://img.shields.io/badge/rustc-1.85+-orange.svg)](#)
+[![CI](https://github.com/dayu-sec/wist-control/actions/workflows/ci.yml/badge.svg)](https://github.com/dayu-sec/wist-control/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/dayu-sec/wist-control/branch/main/graph/badge.svg)](https://codecov.io/gh/dayu-sec/wist-control)
+[![dependency status](https://deps.rs/repo/github/dayu-sec/wist-control/status.svg)](https://deps.rs/repo/github/dayu-sec/wist-control)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 `wist-control` is the reusable **Control** domain model in the `wist` system. It captures the agent
 control plane and center governance objects — actors, capabilities, agent command/enrollment/identity
