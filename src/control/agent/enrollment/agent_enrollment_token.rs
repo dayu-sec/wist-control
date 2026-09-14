@@ -2,7 +2,11 @@
 // @jumo hash=776b3eddfe95851e
 
 #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo)]
-#[jumo(kind = "struct", domain = "Control", module = "Control.Agent.Enrollment")]
+#[jumo(
+    kind = "struct",
+    domain = "Control",
+    module = "Control.Agent.Enrollment"
+)]
 pub struct AgentEnrollmentToken {
     pub revoked_at: crate::control::types::DateTime,
     pub allowed_node_selector: String,

@@ -2,7 +2,11 @@
 // @jumo hash=c75502bb722a32ca
 
 #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo)]
-#[jumo(kind = "struct", domain = "Control", module = "Control.Agent.Enrollment")]
+#[jumo(
+    kind = "struct",
+    domain = "Control",
+    module = "Control.Agent.Enrollment"
+)]
 pub struct AgentEnrollmentResult {
     pub credential_bundle: crate::control::types::AgentCredentialBundle,
     pub initial_config: crate::control::types::AgentInitialConfig,

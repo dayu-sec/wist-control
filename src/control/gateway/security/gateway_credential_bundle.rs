@@ -1,7 +1,13 @@
 // @jumo generated
 // Model struct: GatewayCredentialBundle — 网关注册成功后签发的运行期凭据（RUNTIME_TOKEN）。
-#[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo)]
-#[jumo(kind = "struct", domain = "Control", module = "Control.Gateway.Security")]
+#[derive(
+    Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo,
+)]
+#[jumo(
+    kind = "struct",
+    domain = "Control",
+    module = "Control.Gateway.Security"
+)]
 pub struct GatewayCredentialBundle {
     #[jumo(unique)]
     pub credential_id: String,

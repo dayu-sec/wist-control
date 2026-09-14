@@ -2,7 +2,12 @@
 // @jumo hash=d829890b1e8302c4
 
 #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo)]
-#[jumo(kind = "message", role = "command", domain = "Control", module = "Control.AgentApp.FacingInterface")]
+#[jumo(
+    kind = "message",
+    role = "command",
+    domain = "Control",
+    module = "Control.AgentApp.FacingInterface"
+)]
 pub struct PollControlCommands {
     pub requested_at: crate::control::types::DateTime,
     pub last_seen_sequence: i64,

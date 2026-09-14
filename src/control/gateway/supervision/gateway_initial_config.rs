@@ -1,6 +1,12 @@
 // @jumo generated
-#[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo)]
-#[jumo(kind = "struct", domain = "Control", module = "Control.Gateway.Supervision")]
+#[derive(
+    Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo,
+)]
+#[jumo(
+    kind = "struct",
+    domain = "Control",
+    module = "Control.Gateway.Supervision"
+)]
 pub struct GatewayInitialConfig {
     pub gateway_id: String,
     pub control_center_endpoint: String,

@@ -2,7 +2,12 @@
 // @jumo hash=f89352363bbea22d
 
 #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo)]
-#[jumo(kind = "message", role = "command", domain = "Control", module = "Control.AgentApp.FacingInterface")]
+#[jumo(
+    kind = "message",
+    role = "command",
+    domain = "Control",
+    module = "Control.AgentApp.FacingInterface"
+)]
 pub struct SubmitEnrollmentRequest {
     pub capability_summary: String,
     pub token: String,

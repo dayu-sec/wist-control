@@ -1,6 +1,12 @@
 // @jumo generated
-#[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo)]
-#[jumo(kind = "struct", domain = "Control", module = "Control.Gateway.Identity")]
+#[derive(
+    Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo,
+)]
+#[jumo(
+    kind = "struct",
+    domain = "Control",
+    module = "Control.Gateway.Identity"
+)]
 pub struct GateWayIdentity {
     #[jumo(unique)]
     pub gateway_id: String,

@@ -1,6 +1,12 @@
 // @jumo generated
-#[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo)]
-#[jumo(kind = "struct", domain = "Control", module = "Control.Gateway.Security")]
+#[derive(
+    Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo,
+)]
+#[jumo(
+    kind = "struct",
+    domain = "Control",
+    module = "Control.Gateway.Security"
+)]
 pub struct ControlCenterTrustBundle {
     pub trust_bundle_id: String,
     pub control_endpoint: String,

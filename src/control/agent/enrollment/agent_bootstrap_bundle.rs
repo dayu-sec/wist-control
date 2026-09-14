@@ -2,7 +2,11 @@
 // @jumo hash=5a7809976f6c209f
 
 #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo)]
-#[jumo(kind = "struct", domain = "Control", module = "Control.Agent.Enrollment")]
+#[jumo(
+    kind = "struct",
+    domain = "Control",
+    module = "Control.Agent.Enrollment"
+)]
 pub struct AgentBootstrapBundle {
     pub expires_at: crate::control::types::DateTime,
     pub environment_id: String,

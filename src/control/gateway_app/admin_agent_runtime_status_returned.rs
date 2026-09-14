@@ -2,7 +2,12 @@
 // @jumo hash=4186b433ea3b839c
 
 #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo)]
-#[jumo(kind = "message", role = "response", domain = "Control", module = "Control.GatewayApp.UserFacingInterface")]
+#[jumo(
+    kind = "message",
+    role = "response",
+    domain = "Control",
+    module = "Control.GatewayApp.UserFacingInterface"
+)]
 pub struct AdminAgentRuntimeStatusReturned {
     pub status: crate::control::types::AgentRuntimeStatus,
 }
