@@ -1,5 +1,7 @@
 // @jumo generated
-#[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo)]
+#[derive(
+    Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo,
+)]
 #[jumo(kind = "struct", domain = "Control", module = "Control.Agent.Command")]
 pub struct AgentFleetDispatchReceipt {
     #[jumo(unique)]

@@ -16,7 +16,7 @@ use wist_control::{
     AgentEnrollmentTokenStatus, AgentEnrollmentTokenValidationStatus, AgentIdentityStatus,
     AgentInitialConfig, AgentInstance, AgentPolicyBinding, AgentRuntimeStatus,
     AgentUpstreamMessageType, ControlCommandsReturned, ControlLongPollTimedOut,
-    ControlMessageAccepted, ControlMessageRejected, GatewayIdentityStatus, GatewayCustomerBinding,
+    ControlMessageAccepted, ControlMessageRejected, GatewayCustomerBinding, GatewayIdentityStatus,
     GatewayInstanceLifecycleState, GatewayRuntimeStatus, GatewayStatusAccepted,
 };
 

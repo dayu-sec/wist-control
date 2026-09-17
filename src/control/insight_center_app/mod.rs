@@ -7,8 +7,6 @@ pub mod admin_create_gateway_instance;
 pub use admin_create_gateway_instance::*;
 pub mod admin_dispatch_global_policy;
 pub use admin_dispatch_global_policy::*;
-pub mod admin_gateway_customer_binding_returned;
-pub use admin_gateway_customer_binding_returned::*;
 pub mod admin_gateway_list_returned;
 pub use admin_gateway_list_returned::*;
 pub mod admin_gateway_status_list_returned;
