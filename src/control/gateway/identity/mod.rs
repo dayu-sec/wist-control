@@ -1,7 +1,7 @@
 // @jumo generated
 // Model module: Control.Gateway.Identity
 
-pub mod gate_way_identity;
-pub use gate_way_identity::*;
-pub mod gate_way_identity_status;
-pub use gate_way_identity_status::*;
+pub mod gateway_identity;
+pub use gateway_identity::*;
+pub mod gateway_identity_status;
+pub use gateway_identity_status::*;

@@ -3,13 +3,14 @@
     Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo,
 )]
 #[jumo(
-    kind = "struct",
+    kind = "message",
+    role = "command",
     domain = "Control",
     module = "Control.InsightCenter.PlatformRelease"
 )]
-pub struct WarpGateWayRelease {
+pub struct PublishWarpGateway {
     pub version: String,
     pub artifact_url: String,
-    pub status: String,
-    pub published_at: crate::DateTime,
+    pub requested_by: String,
+    pub requested_at: crate::DateTime,
 }

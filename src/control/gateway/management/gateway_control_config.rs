@@ -7,11 +7,13 @@
     domain = "Control",
     module = "Control.Gateway.Management"
 )]
-pub struct GateWayOverviewView {
+pub struct GatewayControlConfig {
+    #[jumo(unique)]
+    pub config_id: String,
     pub gateway_id: String,
-    pub agent_total: i64,
-    pub agent_online: i64,
-    pub agent_unhealthy: i64,
-    pub status: String,
+    pub advertise_url: String,
+    pub enrollment_url: String,
+    pub gateway_url: String,
+    pub telemetry_url: String,
     pub updated_at: crate::DateTime,
 }

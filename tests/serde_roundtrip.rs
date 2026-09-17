@@ -16,7 +16,7 @@ use wist_control::{
     AgentEnrollmentTokenStatus, AgentEnrollmentTokenValidationStatus, AgentIdentityStatus,
     AgentInitialConfig, AgentInstance, AgentPolicyBinding, AgentRuntimeStatus,
     AgentUpstreamMessageType, ControlCommandsReturned, ControlLongPollTimedOut,
-    ControlMessageAccepted, ControlMessageRejected, GateWayIdentityStatus, GatewayCustomerBinding,
+    ControlMessageAccepted, ControlMessageRejected, GatewayIdentityStatus, GatewayCustomerBinding,
     GatewayInstanceLifecycleState, GatewayRuntimeStatus, GatewayStatusAccepted,
 };
 
@@ -140,10 +140,10 @@ fn enums_serialize_and_round_trip() {
     ]);
 
     assert_enum(&[
-        (GateWayIdentityStatus::Active, "Active"),
-        (GateWayIdentityStatus::Revoked, "Revoked"),
-        (GateWayIdentityStatus::Expired, "Expired"),
-        (GateWayIdentityStatus::RenewalRequired, "RenewalRequired"),
+        (GatewayIdentityStatus::Active, "Active"),
+        (GatewayIdentityStatus::Revoked, "Revoked"),
+        (GatewayIdentityStatus::Expired, "Expired"),
+        (GatewayIdentityStatus::RenewalRequired, "RenewalRequired"),
     ]);
 
     assert_enum(&[

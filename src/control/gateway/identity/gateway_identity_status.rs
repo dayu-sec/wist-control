@@ -7,7 +7,7 @@
     domain = "Control",
     module = "Control.Gateway.Identity"
 )]
-pub enum GateWayIdentityStatus {
+pub enum GatewayIdentityStatus {
     Active,
     Revoked,
     Expired,

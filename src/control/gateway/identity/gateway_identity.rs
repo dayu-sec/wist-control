@@ -7,7 +7,7 @@
     domain = "Control",
     module = "Control.Gateway.Identity"
 )]
-pub struct GateWayIdentity {
+pub struct GatewayIdentity {
     #[jumo(unique)]
     pub gateway_id: String,
     pub instance_id: String,
@@ -16,5 +16,5 @@ pub struct GateWayIdentity {
     pub node_id: String,
     pub issued_at: crate::DateTime,
     pub expires_at: crate::DateTime,
-    pub status: crate::GateWayIdentityStatus,
+    pub status: crate::GatewayIdentityStatus,
 }
