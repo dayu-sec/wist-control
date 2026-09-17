@@ -8,7 +8,7 @@
     module = "Control.Agent.Enrollment"
 )]
 pub struct AgentEnrollmentTokenValidation {
-    pub host_profile: crate::control::types::AgentHostProfile,
+    pub host_profile: crate::control::types::HostProfile,
     pub validated_at: crate::control::types::DateTime,
     pub status: crate::control::types::AgentEnrollmentTokenValidationStatus,
     pub tenant_id: String,

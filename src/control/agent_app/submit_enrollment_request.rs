@@ -12,6 +12,6 @@ pub struct SubmitEnrollmentRequest {
     pub capability_summary: String,
     pub token: String,
     pub requested_at: crate::control::types::DateTime,
-    pub host_profile: crate::control::types::AgentHostProfile,
+    pub host_profile: crate::control::types::HostProfile,
     pub credential_request: String,
 }

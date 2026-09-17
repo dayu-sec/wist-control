@@ -8,7 +8,7 @@
     module = "Control.Agent.Enrollment"
 )]
 pub struct AgentEnrollmentResult {
-    pub credential_bundle: crate::control::types::AgentCredentialBundle,
+    pub credential_bundle: crate::control::types::CredentialBundle,
     pub initial_config: crate::control::types::AgentInitialConfig,
     pub reason_code: String,
     pub instance_id: String,

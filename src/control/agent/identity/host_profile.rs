@@ -3,7 +3,7 @@
 
 #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo)]
 #[jumo(kind = "struct", domain = "Control", module = "Control.Agent.Identity")]
-pub struct AgentHostProfile {
+pub struct HostProfile {
     pub cloud_instance_id: String,
     #[jumo(unique)]
     pub node_id: String,

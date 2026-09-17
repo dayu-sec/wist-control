@@ -3,7 +3,7 @@
 
 #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo)]
 #[jumo(kind = "struct", domain = "Control", module = "Control.Agent.Identity")]
-pub struct AgentCredentialBundle {
+pub struct CredentialBundle {
     pub not_before: crate::control::types::DateTime,
     pub not_after: crate::control::types::DateTime,
     pub certificate: String,
