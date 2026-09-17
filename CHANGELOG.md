@@ -5,56 +5,35 @@
 
 ## [0.2.0] latest
 
-本次把 crate 与 `warp-insight/jumo/model` 对齐（`jumo-code diff` 的「注解不匹配」与「代码已注解、模型无」
-两个分类均已归零）。**改名、删除都是破坏性变更**；其中 8 个响应类型对应的 HTTP 响应体少了一层包装，
-服务端消费方需同步（`wist-center`、`wist-gateway`、`wist-gateway-stack/sysrun/re-enroll.sh` 已随本次更新）。
+与 `warp-insight/jumo/model` 对齐（`jumo-code diff` 差异分类归零）。改名与删除均为**破坏性**变更。
 
 ### 变更
 
-- **类型改名**：`GateWay`（中间大写 W）是生成期错拼，模型与拼写习惯都是 `Gateway`。
-  - `GateWayIdentity` → `GatewayIdentity`，`GateWayIdentityStatus` → `GatewayIdentityStatus`
-  - `GateWayControlConfig` → `GatewayControlConfig`，`GateWayHealth` → `GatewayHealth`
-  - `GateWayManagementStateView` → `GatewayManagementState`（模型里就叫这名，label en 为
-    "Gateway Management State View"）
-  - `GateWayOverviewView` → `GatewayOverviewView`
-  - `ViewGateWayManagementState` → `ViewGatewayManagementState`
-  - `WarpGateWayInstance` → `WarpGatewayInstance`，`WarpGateWayRelease` → `WarpGatewayRelease`
-  - `PublishWarpGateWay` → `PublishWarpGateway`
-  - `AgentHostProfile` → `HostProfile`，`AgentCredentialBundle` → `CredentialBundle`
-  - 文件名、`mod.rs` 与 `tests/serde_roundtrip.rs` 同步。
-- **HTTP 响应体去掉单字段外壳**，直接返回领域类型，与 `binding.mju` 的 `status <领域类型> <code>` 一致：
+- `GateWay`（生成期错拼）统一为 `Gateway`：`GateWayIdentity`、`GateWayIdentityStatus`、`GateWayControlConfig`、
+  `GateWayHealth`、`GateWayOverviewView`、`ViewGateWayManagementState`、`WarpGateWayInstance`、
+  `WarpGateWayRelease`、`PublishWarpGateWay` 只改拼写；`GateWayManagementStateView` → `GatewayManagementState`。
+- 去掉 `Agent` 前缀：`AgentHostProfile` → `HostProfile`，`AgentCredentialBundle` → `CredentialBundle`。
+- **HTTP 响应体少一层包装**，直接返回 `binding.mju` 中 `status` 指定的领域类型：
 
-  | 入口 | 原响应体 | 现响应体 |
+  | 入口 | 原外壳类型 | 现响应类型 |
   |---|---|---|
-  | `AdminBindGatewayCustomer` | `{ "binding": {…} }` | `GatewayCustomerBinding` |
-  | `RegisterGateway` | `{ "result": {…} }` | `GatewayEnrollmentResult` |
-  | `ReportGatewayStatus` | `{ "receipt": {…} }` | `GatewayStatusAccepted` |
-  | `AdminGetGatewayInitialConfig` | `{ "config": {…} }` | `GatewayInitialConfig` |
-  | `AdminGetAgentInstallCode` | `{ "install_code": {…} }` | `AgentInstallCode` |
-  | `AdminShowAgentRuntimeStatus` | `{ "status": {…} }` | `AgentRuntimeStatus` |
-  | `AdminPauseAgent` / `AdminUpgradeAgent` | `{ "result": {…} }` | `DispatchReceipt` |
+  | `AdminBindGatewayCustomer` | `AdminGatewayCustomerBindingReturned` | `GatewayCustomerBinding` |
+  | `RegisterGateway` | `GatewayEnrollmentResultReturned` | `GatewayEnrollmentResult` |
+  | `ReportGatewayStatus` | `GatewayStatusAcceptedReturned` | `GatewayStatusAccepted` |
+  | `AdminGetGatewayInitialConfig` | `GatewayInitialConfigReturned` | `GatewayInitialConfig` |
+  | `AdminGetAgentInstallCode` | `AdminAgentInstallCodeReturned` | `AgentInstallCode` |
+  | `AdminShowAgentRuntimeStatus` | `AdminAgentRuntimeStatusReturned` | `AgentRuntimeStatus` |
+  | `AdminPauseAgent` / `AdminUpgradeAgent` | `AdminPauseAgentDispatchReturned` / `AdminUpgradeAgentDispatchReturned` | `DispatchReceipt` |
 
-- 模型归属修正：`AgentFleetDispatchReceipt` → `Control.Agent.Command`（原 `Control.GatewayApp.Application`）；
-  `ViewGatewayList` → `Control.InsightCenterApp.WistCenter`（模型模块由 `WarpInsightCenter` 改名）。
-- 读投影视图不再挂 `jumo` 注解：`GatewayOverviewView`（模型注明"形状由实现层派生，不建模"）。
+- 纯注解层面的修正（不影响 API）：`AgentFleetDispatchReceipt` 归属 `Control.Agent.Command`、
+  `ViewGatewayList` 归属 `Control.InsightCenterApp.WistCenter`、读投影 `GatewayOverviewView` 不再挂 `jumo` 注解。
 
 ### 移除
 
-- 8 个单字段响应外壳类型：`AdminGatewayCustomerBindingReturned`、`GatewayEnrollmentResultReturned`、
-  `GatewayStatusAcceptedReturned`、`GatewayInitialConfigReturned`、`AdminAgentInstallCodeReturned`、
-  `AdminAgentRuntimeStatusReturned`、`AdminPauseAgentDispatchReturned`、`AdminUpgradeAgentDispatchReturned`
-  —— 模型从未有过这些名字，属生成期产物。
-- 3 个没有任何调用方的响应类型：`AdminGatewayInstanceReturned`、`AdminGlobalPolicyDispatchReturned`、
-  `AgentEnrollmentResultReturned`（对应入口分别使用本地类型、直接返回领域类型、以及 `wist-contracts`
-  的 `EnrollmentEnvelope`）。
-- `DispatchGlobalPolicy`：与已有的 `AdminDispatchGlobalPolicy` 字段完全重复，且注解挂在其实际不归属的
-  `InsightCenterApp.WarpInsightCenter` 模块；管理员入口统一使用 `AdminDispatchGlobalPolicy`。
+- 3 个无调用方的响应类型：`AdminGatewayInstanceReturned`、`AdminGlobalPolicyDispatchReturned`、
+  `AgentEnrollmentResultReturned`。
+- `DispatchGlobalPolicy`：与已有的 `AdminDispatchGlobalPolicy` 完全重复，管理员入口统一用后者。
 
 ## [0.1.2] - 2026-09-14
 
-### 新增
-
-- 本仓首个发布（此后到 0.1.2 未再变更版本号）：`Control` 域模型（agent / gateway / insight-center
-  三组应用与领域模块，含 actors、binding 与静态域契约）。
-- 接入 GitHub Actions（build / test / clippy）、包元数据与由 `version.txt` 驱动的版本号。
-- 全模型 serde 往返测试；以及让 `llvm-cov` 能产出覆盖率的 smoke test。
+- 本仓首个发布：`Control` 域模型、CI（build / test / clippy）与全模型 serde 往返测试。
