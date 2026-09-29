@@ -3,7 +3,15 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [0.2.0] latest
+## [0.3.0] - 2026-09-29
+
+### 移除
+
+- **破坏性**：移除 `AdminPauseAgent`、`AdminUpgradeAgent` 两个管理员命令及其回执类型 `DispatchReceipt`。
+  agent 的暂停 / 升级改由 `DispatchAgentFleetCommand`（按 `command_kind` 区分动作）统一承载，调用方请改用
+  该入口及其回执 `AgentFleetDispatchReceipt`。
+
+## [0.2.0]
 
 与 `warp-insight/jumo/model` 对齐（`jumo-code diff` 差异分类归零）。改名与删除均为**破坏性**变更。
 
