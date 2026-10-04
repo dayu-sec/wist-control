@@ -9,5 +9,5 @@
     module = "Control.GatewayApp.FacingInterface"
 )]
 pub struct QueryGatewayInitializationStatus {
-    pub instance_id: Option<String>,
+    pub gateway_id: String,
 }

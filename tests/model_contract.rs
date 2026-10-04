@@ -349,7 +349,7 @@ fn gateway_domain_types_round_trip() {
         "bound_at": TS,
     }));
 
-    rt_ok::<GetGatewayInitialConfig>(json!({ "instance_id": "inst-1", "requested_at": TS }));
+    rt_ok::<GetGatewayInitialConfig>(json!({ "gateway_id": "gw-1", "requested_at": TS }));
     rt_ok::<InitializeGatewayViaUrl>(json!({ "init_url": "https://init", "requested_at": TS }));
     rt_ok::<RegisterGateway>(json!({
         "enrollment_token": "enroll-1",
@@ -641,7 +641,7 @@ fn app_and_admin_message_types_round_trip() {
         "lifecycle_state": "Initializing",
         "initialized": false,
     }));
-    rt_ok::<QueryGatewayInitializationStatus>(json!({ "instance_id": "inst-1" }));
+    rt_ok::<QueryGatewayInitializationStatus>(json!({ "gateway_id": "gw-1" }));
 
     rt_ok::<AdminBindGatewayCustomer>(json!({
         "gateway_id": "gw-1",

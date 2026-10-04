@@ -3,6 +3,18 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.4.0] - 2026-10-04
+
+与 `wist-design/jumo` 模型对齐（身份统一）：网关面 / 初始配置的查询键统一为 `gateway_id`，
+`instance_id` 只保留给置备域，不再承载 gateway_id。**破坏性**变更。
+
+### 变更
+
+- `QueryGatewayInitializationStatus`：`instance_id: Option<String>` → `gateway_id: String`。
+- `GetGatewayInitialConfig`：`instance_id: String` → `gateway_id: String`。
+
+对应 HTTP 查询参数由 `?instance_id=` 改为 `?gateway_id=`（`wist-center` 已同步，升级本组件后请同步升级依赖方）。
+
 ## [0.3.0] - 2026-09-29
 
 ### 移除

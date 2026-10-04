@@ -9,6 +9,6 @@
     module = "Control.Gateway.Supervision"
 )]
 pub struct GetGatewayInitialConfig {
-    pub instance_id: String,
+    pub gateway_id: String,
     pub requested_at: crate::DateTime,
 }
