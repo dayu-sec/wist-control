@@ -63,10 +63,7 @@ use wist_control::{
     DispatchAgentFleetCommand,
     DuplicateRegistrationDetected,
     GatewayControlConfig,
-    GatewayCredentialBundle,
-    GatewayCredentialVerificationResult,
     GatewayCustomerBinding,
-    GatewayEnrollmentResult,
     GatewayHealth,
     GatewayIdentity,
     GatewayIdentityStatus,
@@ -88,14 +85,12 @@ use wist_control::{
     PublishWarpGateway,
     PublishWistAgentd,
     QueryGatewayInitializationStatus,
-    RegisterGateway,
     ReportGatewayStatus,
     SubmitEnrollmentRequest,
     UpgradePlan,
     UpgradePlanApproval,
     UpgradeStep,
     UpgradeTarget,
-    VerifyGatewayCredential,
     ViewGatewayList,
     ViewGatewayManagementState,
     WarpGatewayInstance,
@@ -131,18 +126,6 @@ fn gw_runtime_status() -> Value {
         "memory_bytes": 536_870_912,
         "cpu_percent": 12.5,
         "last_seen_at": TS,
-    })
-}
-
-fn gw_credential_bundle() -> Value {
-    json!({
-        "credential_id": "cred-1",
-        "gateway_id": "gw-1",
-        "instance_id": "inst-1",
-        "auth_scheme": "bearer",
-        "bearer_token": "runtime-token",
-        "issued_at": TS,
-        "expires_at": TS,
     })
 }
 
@@ -277,15 +260,6 @@ fn gateway_domain_types_round_trip() {
         "expires_at": TS,
     }));
 
-    rt_ok::<GatewayCredentialBundle>(gw_credential_bundle());
-
-    rt_ok::<GatewayCredentialVerificationResult>(json!({
-        "gateway_id": "gw-1",
-        "credential_id": "cred-1",
-        "status": "valid",
-        "verified_at": TS,
-    }));
-
     rt_ok::<GatewayInitialConfig>(json!({
         "gateway_id": "gw-1",
         "control_center_endpoint": "https://center.example",
@@ -319,15 +293,6 @@ fn gateway_domain_types_round_trip() {
         "created_at": TS,
     }));
 
-    rt_ok::<GatewayEnrollmentResult>(json!({
-        "status": "accepted",
-        "gateway_id": "gw-1",
-        "instance_id": "inst-1",
-        "credential_id": "cred-1",
-        "initial_config": "v1",
-        "credential_bundle": gw_credential_bundle(),
-    }));
-
     rt_ok::<GlobalPolicyDispatch>(json!({
         "dispatch_id": "disp-1",
         "policy_version": "v1",
@@ -351,11 +316,6 @@ fn gateway_domain_types_round_trip() {
 
     rt_ok::<LinkUpstream>(json!({ "gateway_id": "gw-1", "requested_at": TS }));
     rt_ok::<InitializeGatewayViaUrl>(json!({ "init_url": "https://init", "requested_at": TS }));
-    rt_ok::<RegisterGateway>(json!({
-        "enrollment_token": "enroll-1",
-        "instance_id": "inst-1",
-        "requested_at": TS,
-    }));
     rt_ok::<ReportGatewayStatus>(json!({
         "gateway_id": "gw-1",
         "instance_id": "inst-1",
@@ -365,11 +325,6 @@ fn gateway_domain_types_round_trip() {
         "memory_bytes": 1024,
         "cpu_percent": 1.5,
         "reported_at": TS,
-    }));
-    rt_ok::<VerifyGatewayCredential>(json!({
-        "gateway_id": "gw-1",
-        "instance_id": "inst-1",
-        "credential_id": "cred-1",
     }));
 }
 
@@ -798,11 +753,6 @@ fn empty_collections_and_strings_round_trip() {
     }));
 
     // 纯 DTO、无校验：全空字符串被原样接受。
-    rt_ok::<RegisterGateway>(json!({
-        "enrollment_token": "",
-        "instance_id": "",
-        "requested_at": TS,
-    }));
     rt_ok::<AdminViewGatewayList>(json!({ "requested_by": "" }));
 }
 
@@ -956,17 +906,6 @@ fn missing_required_field_is_rejected() {
         }))
         .is_err(),
         "缺少必填字段 step_index 应报错"
-    );
-    assert!(
-        serde_json::from_value::<GatewayEnrollmentResult>(json!({
-            "status": "accepted",
-            "gateway_id": "gw-1",
-            "instance_id": "inst-1",
-            "credential_id": "cred-1",
-            "initial_config": "v1",
-        }))
-        .is_err(),
-        "缺少必填字段 credential_bundle 应报错"
     );
 }
 

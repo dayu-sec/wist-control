@@ -1,8 +1,6 @@
 // @jumo generated
 // Model module: Control.Gateway.Supervision
 
-pub mod gateway_enrollment_result;
-pub use gateway_enrollment_result::*;
 pub mod gateway_initial_config;
 pub use gateway_initial_config::*;
 pub mod gateway_status_accepted;
@@ -23,12 +21,8 @@ pub mod link_upstream;
 pub use link_upstream::*;
 pub mod initialize_gateway_via_url;
 pub use initialize_gateway_via_url::*;
-pub mod register_gateway;
-pub use register_gateway::*;
 pub mod report_gateway_status;
 pub use report_gateway_status::*;
-pub mod verify_gateway_credential;
-pub use verify_gateway_credential::*;
 pub mod get_gateway_upgrade_plan;
 pub use get_gateway_upgrade_plan::*;
 pub mod gateway_upgrade_plan;
