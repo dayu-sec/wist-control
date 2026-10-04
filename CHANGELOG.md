@@ -3,6 +3,16 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.6.0] - 2026-10-04
+
+与 `wist-design/jumo` 模型对齐：补充网关面「升级取指令 + 回执」契约（CR-002 C2）。**新增**，无破坏。
+
+### 新增
+
+- `GetGatewayUpgradePlan`（query）与 `GatewayUpgradePlan`：该网关应升到的目标（来自覆盖它的已批准升级计划）；
+  无计划时 `has_plan = false`。
+- `ReportGatewayUpgradeResult`（command，字段对齐 `upgrade.json`）与 `GatewayUpgradeResultAccepted`：升级结果回执。
+
 ## [0.5.0] - 2026-10-04
 
 与 `wist-design/jumo` 模型对齐：网关「链接上级」入口由 `initial-config` 更名为 `link-upstream`。
