@@ -79,10 +79,10 @@ use wist_control::{
     GatewayOverviewView,
     GatewayRuntimeStatus,
     GatewayStatusAccepted,
-    GetGatewayInitialConfig,
     GlobalPolicyDispatch,
     HostProfile,
     InitializeGatewayViaUrl,
+    LinkUpstream,
     ManagementEndpointTrustBundle,
     PollControlCommands,
     PublishWarpGateway,
@@ -349,7 +349,7 @@ fn gateway_domain_types_round_trip() {
         "bound_at": TS,
     }));
 
-    rt_ok::<GetGatewayInitialConfig>(json!({ "gateway_id": "gw-1", "requested_at": TS }));
+    rt_ok::<LinkUpstream>(json!({ "gateway_id": "gw-1", "requested_at": TS }));
     rt_ok::<InitializeGatewayViaUrl>(json!({ "init_url": "https://init", "requested_at": TS }));
     rt_ok::<RegisterGateway>(json!({
         "enrollment_token": "enroll-1",

@@ -8,7 +8,7 @@
     domain = "Control",
     module = "Control.Gateway.Supervision"
 )]
-pub struct GetGatewayInitialConfig {
+pub struct LinkUpstream {
     pub gateway_id: String,
     pub requested_at: crate::DateTime,
 }

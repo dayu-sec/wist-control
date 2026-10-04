@@ -3,6 +3,17 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.5.0] - 2026-10-04
+
+与 `wist-design/jumo` 模型对齐：网关「链接上级」入口由 `initial-config` 更名为 `link-upstream`。
+**破坏性**变更（请求类型改名、旧路由移除）。
+
+### 变更
+
+- 请求类型 `GetGatewayInitialConfig` → `LinkUpstream`（字段不变：`gateway_id`、`requested_at`）。
+- 网关面路由 `GET /api/v1/gateway/initial-config` → `GET /api/v1/gateway/link-upstream`（旧路径**移除**，
+  不留别名；消费方请同步升级）。
+
 ## [0.4.0] - 2026-10-04
 
 与 `wist-design/jumo` 模型对齐（身份统一）：网关面 / 初始配置的查询键统一为 `gateway_id`，
