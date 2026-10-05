@@ -1,12 +1,4 @@
-// @jumo generated
-#[derive(
-    Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo,
-)]
-#[jumo(
-    kind = "struct",
-    domain = "Control",
-    module = "Control.InsightCenter.PlatformRelease"
-)]
+#[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize)]
 pub struct WarpGatewayRelease {
     pub version: String,
     pub artifact_url: String,

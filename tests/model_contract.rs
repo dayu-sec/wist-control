@@ -86,7 +86,6 @@ use wist_control::{
     PublishWistAgentd,
     QueryGatewayInitializationStatus,
     ReportGatewayStatus,
-    SubmitEnrollmentRequest,
     UpgradePlan,
     UpgradePlanApproval,
     UpgradeStep,
@@ -563,14 +562,6 @@ fn app_and_admin_message_types_round_trip() {
         "wait_ms": 30_000,
         "agent_id": "agent-1",
         "instance_id": "inst-1",
-    }));
-
-    rt_ok::<SubmitEnrollmentRequest>(json!({
-        "capability_summary": "caps",
-        "token": "token",
-        "requested_at": TS,
-        "host_profile": host_profile(),
-        "credential_request": "req",
     }));
 
     rt_ok::<AdminGetAgentInstallCode>(json!({}));
