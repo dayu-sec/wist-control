@@ -3,6 +3,29 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.7.0] - 2026-10-06
+
+与 `wist-design/jumo` 模型对齐：网关面的 **agent 状态上报报文体收口进模型**（原为 `wist-center`
+本地定义，现由本仓生成），并清理死骨架。
+
+### 新增
+
+- `ReportAgentStatus`（command）：`POST /api/v1/gateway/agents/status` 的报文体
+  （`gateway_id` + `agents: List<AgentRuntimeStatus>`）。
+- `AgentStatusAcceptedReturned`（response）：该入口的 200 回执（`gateway_id` + `agents_accepted`）。
+  接收端 `wist-center` 改用它，**不再本地定义** `AgentStatusReportRequest` / `AgentStatusEntry`，
+  消除发送/接收两侧的 drift。
+
+### 移除
+
+- **破坏性**：删除 `SubmitEnrollmentRequest` 生成骨架 —— 无模型对应、无调用方
+  （agent 侧报名报文已由 `wist-api::enrollment` 承载）。
+
+### 说明
+
+- `WarpGatewayInstance` / `GatewayUpgradeResultAccepted` / `PublishWarpGateway` / `WarpGatewayRelease`
+  去除 `#[jumo]` 注解（分别为无模型对应、或注解 `kind` 与模型不符）；仅注解层，不影响 wire。
+
 ## [0.6.1] - 2026-10-05
 
 与 `wist-design/jumo` 模型对齐：网关状态上报/视图**富化**（机队 / 存储 / 数据面 / 主机资源）。**新增可选字段**，向前兼容
