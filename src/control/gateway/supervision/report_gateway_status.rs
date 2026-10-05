@@ -17,4 +17,39 @@ pub struct ReportGatewayStatus {
     pub memory_bytes: Option<i64>,
     pub cpu_percent: Option<f64>,
     pub reported_at: crate::DateTime,
+    // NOTE(hand-added): 网关状态富化字段（与自述面 GatewaySelfState 同一份值）。
+    // 全部可选 —— 老版本网关不带这些键，中心侧 `#[serde(default)]` 兜底。
+    // 见设计 `wist-design/doc/design/edge/gateway-status-report.md`。
+    #[serde(default)]
+    pub uptime_seconds: Option<i64>,
+    #[serde(default)]
+    pub agent_count: Option<i64>,
+    #[serde(default)]
+    pub online_agents: Option<i64>,
+    #[serde(default)]
+    pub offline_agents: Option<i64>,
+    #[serde(default)]
+    pub last_seen_lag_seconds: Option<i64>,
+    #[serde(default)]
+    pub store_bytes: Option<i64>,
+    #[serde(default)]
+    pub ingest_accepted_total: Option<i64>,
+    #[serde(default)]
+    pub ingest_rejected_total: Option<i64>,
+    #[serde(default)]
+    pub last_ingest_at: Option<crate::DateTime>,
+    #[serde(default)]
+    pub memory_total_bytes: Option<i64>,
+    #[serde(default)]
+    pub load_1m: Option<f64>,
+    #[serde(default)]
+    pub load_5m: Option<f64>,
+    #[serde(default)]
+    pub load_15m: Option<f64>,
+    #[serde(default)]
+    pub disk_usage_percent: Option<f64>,
+    #[serde(default)]
+    pub disk_total_bytes: Option<i64>,
+    #[serde(default)]
+    pub disk_available_bytes: Option<i64>,
 }

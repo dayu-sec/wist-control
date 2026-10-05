@@ -3,6 +3,22 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.6.1] - 2026-10-05
+
+与 `wist-design/jumo` 模型对齐：网关状态上报/视图**富化**（机队 / 存储 / 数据面 / 主机资源）。**新增可选字段**，向前兼容
+（老网关不带这些键，中心侧 `serde(default)` 兜底）。
+
+### 新增
+
+- `ReportGatewayStatus`：`uptime_seconds`、`agent_count` / `online_agents` / `offline_agents` / `last_seen_lag_seconds`、
+  `store_bytes`、`ingest_accepted_total` / `ingest_rejected_total` / `last_ingest_at`、`memory_total_bytes`、
+  `load_1m` / `load_5m` / `load_15m`、`disk_usage_percent` / `disk_total_bytes` / `disk_available_bytes`。
+- `GatewayRuntimeStatus`：同上一组（供中心视图展示）。
+
+### 说明
+
+- `status` 取值约定为 `online` / `offline`（中心按 `== "online"` 计数与展示；勿再发 `running`）。
+
 ## [0.6.0] - 2026-10-04
 
 与 `wist-design/jumo` 模型对齐：补充网关面「升级取指令 + 回执」契约（CR-002 C2）。**新增**，无破坏。
