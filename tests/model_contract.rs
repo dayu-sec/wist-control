@@ -62,8 +62,13 @@ use wist_control::{
     CredentialBundle,
     DispatchAgentFleetCommand,
     DuplicateRegistrationDetected,
+    GatewayClientCertificate,
+    GatewayClientCertificateStatus,
     GatewayControlConfig,
+    GatewayCredentialBundle,
+    GatewayCredentialVerificationResult,
     GatewayCustomerBinding,
+    GatewayEnrollmentResult,
     GatewayHealth,
     GatewayIdentity,
     GatewayIdentityStatus,
@@ -85,11 +90,14 @@ use wist_control::{
     PublishWarpGateway,
     PublishWistAgentd,
     QueryGatewayInitializationStatus,
+    RegisterGateway,
+    RenewGatewayCredential,
     ReportGatewayStatus,
     UpgradePlan,
     UpgradePlanApproval,
     UpgradeStep,
     UpgradeTarget,
+    VerifyGatewayCredential,
     ViewGatewayList,
     ViewGatewayManagementState,
     WarpGatewayInstance,
@@ -324,6 +332,83 @@ fn gateway_domain_types_round_trip() {
         "memory_bytes": 1024,
         "cpu_percent": 1.5,
         "reported_at": TS,
+    }));
+}
+
+// ── 2b. 网关接入 seam 报文体（模型生成，`wist-control`）──────────────
+
+/// `POST /api/v1/gateway/{register,credentials:renew,credentials/verify}` 的报文体：
+/// 以前手写在 `wist-contracts::gateway_control`，现由模型生成到 `Control.Gateway.{Security,Supervision}`。
+/// 下游（`wist-center` / `wist-gwlinkd`）两侧共用同一类型，这里固化其线上 JSON 形状。
+#[test]
+fn gateway_onboarding_seam_types_round_trip() {
+    rt_ok::<RegisterGateway>(json!({
+        "enrollment_token": "enroll-1",
+        "instance_id": "inst-1",
+        "certificate_signing_request": "-----BEGIN CERTIFICATE REQUEST-----\nA\n",
+        "requested_at": TS,
+    }));
+
+    rt_ok::<RenewGatewayCredential>(json!({
+        "gateway_id": "gw-1",
+        "current_certificate_serial": "01",
+        "certificate_signing_request": "CSR",
+        "requested_at": TS,
+    }));
+
+    rt_ok::<VerifyGatewayCredential>(json!({
+        "gateway_id": "gw-1",
+        "certificate_serial": "01",
+    }));
+
+    let bundle = json!({
+        "credential_id": "cred-1",
+        "gateway_id": "gw-1",
+        "instance_id": "inst-1",
+        "certificate": "-----BEGIN CERTIFICATE-----\nA\n-----END CERTIFICATE-----\n",
+        "ca_bundle": null,
+        "issued_at": TS,
+        "not_before": TS,
+        "not_after": TS,
+    });
+    rt_ok::<GatewayCredentialBundle>(bundle.clone());
+
+    let enrollment = json!({
+        "status": "accepted",
+        "gateway_id": "gw-1",
+        "instance_id": "inst-1",
+        "credential_id": "cred-1",
+        "initial_config": "v1",
+        "credential_bundle": bundle.clone(),
+    });
+    rt_ok::<GatewayEnrollmentResult>(enrollment.clone());
+
+    // 注册回执**必须**带回长期凭据（客户端证书）：缺 `credential_bundle` 的报文解不了。
+    let mut without_bundle = enrollment;
+    without_bundle
+        .as_object_mut()
+        .expect("object")
+        .remove("credential_bundle");
+    assert!(serde_json::from_value::<GatewayEnrollmentResult>(without_bundle).is_err());
+
+    rt_ok::<GatewayClientCertificate>(json!({
+        "certificate_id": "cert-1",
+        "gateway_id": "gw-1",
+        "serial": "01",
+        "certificate": "PEM",
+        "ca_bundle": null,
+        "issued_at": TS,
+        "not_before": null,
+        "not_after": null,
+        "status": "Active",
+    }));
+    rt_ok::<GatewayClientCertificateStatus>(json!("Revoked"));
+
+    rt_ok::<GatewayCredentialVerificationResult>(json!({
+        "gateway_id": "gw-1",
+        "certificate_serial": "01",
+        "status": "valid",
+        "verified_at": TS,
     }));
 }
 

@@ -3,6 +3,28 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.8.0] - 2026-10-06
+
+与 `wist-design/jumo` 模型对齐：网关面「注册 / 凭据」报文体**从 `wist-contracts::gateway_control` 手写副本
+收回本 crate 按模型生成**（消除第二份定义；`center` / `gwlinkd` 改用同一类型）。**新增**，无破坏。
+
+### 新增（`Control.Gateway.Security`）
+
+- `GatewayCredentialBundle`、`GatewayClientCertificate`、`GatewayClientCertificateStatus`、
+  `GatewayCredentialVerificationResult`。
+
+### 新增（`Control.Gateway.Supervision`）
+
+- `RegisterGateway`、`RenewGatewayCredential`、`VerifyGatewayCredential`、`GatewayEnrollmentResult`。
+
+### 说明
+
+- `GatewayEnrollmentResult` 带回 `credential_bundle: GatewayCredentialBundle`（注册即签发长期凭据）；
+  `RenewGatewayCredential` 含 `requested_at`。二者原属「模型落后于代码」的漂移，已在模型侧补齐后生成。
+- 时间戳字段为 `crate::DateTime`（线上仍是 RFC3339 串）；生成类型**默认容忍未知字段**
+  （原手写副本为 `deny_unknown_fields`）。
+- 同时保留了 `Control.GatewayApp.FacingInterface` 的 `ReportAgentStatus` / `AgentStatusAcceptedReturned`（0.7.0）。
+
 ## [0.7.0] - 2026-10-06
 
 与 `wist-design/jumo` 模型对齐：网关面的 **agent 状态上报报文体收口进模型**（原为 `wist-center`
