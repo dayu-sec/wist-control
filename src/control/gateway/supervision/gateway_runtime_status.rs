@@ -10,6 +10,9 @@
 pub struct GatewayRuntimeStatus {
     pub gateway_id: String,
     pub instance_id: String,
+    // NOTE(hand-added): 网关对外基址（对外域名）。来自状态上报；中心据此知道该网关对外域名。
+    #[serde(default)]
+    pub public_base_url: Option<String>,
     pub version: String,
     pub status: String,
     pub health: String,

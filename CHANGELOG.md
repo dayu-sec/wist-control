@@ -3,6 +3,23 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.9.0] - 2026-10-06
+
+### 变更
+
+- **网关「对外域名」进入接入报文**（`Control.Gateway.Supervision`）：`RegisterGateway` /
+  `ReportGatewayStatus` / `GatewayRuntimeStatus` 各增可选字段 **`public_base_url`**
+  （管理面「对外地址」优先，未设回落本机 `[server] public_base_url`）。
+  注册与周期状态上报都带上它，中心据此知道「这个网关对外是哪个域名」。
+- **升级目标可带中心派生的制品地址**：`GatewayUpgradePlan` 增可选字段 **`artifact_url`** —— 由中心反查
+  已发布的 release 记录派生（`/api/v1/releases/artifact/...`）。执行器用它取件（`gops --to <url>`），
+  不让运维手输远端 / 本机路径。见设计 `edge/gateway-upgrade-and-releases.md`。
+
+### 说明
+
+- 三个字段均可选、`#[serde(default)]`：**线上 JSON 向后兼容**（老 `wist-gwlinkd` / 老网关不带该键，
+  中心侧兑底为 `None`）；但 **构造点需补字段**（Rust 结构体字面量），故本版为 **minor**。
+
 ## [0.8.0] - 2026-10-06
 
 与 `wist-design/jumo` 模型对齐：网关面「注册 / 凭据」报文体**从 `wist-contracts::gateway_control` 手写副本

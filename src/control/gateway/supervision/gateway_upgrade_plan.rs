@@ -13,4 +13,8 @@ pub struct GatewayUpgradePlan {
     pub plan_id: Option<String>,
     pub component: Option<String>,
     pub to_version: Option<String>,
+    // NOTE(hand-added): 中心**派生**的制品下发地址（镜像后的可下载 URL）。
+    // 执行器据此取件（gops `--to <url>`）；缺省 = 无对应 release 记录，回落用 `to_version`。
+    #[serde(default)]
+    pub artifact_url: Option<String>,
 }

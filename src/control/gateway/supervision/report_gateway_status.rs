@@ -11,6 +11,10 @@
 pub struct ReportGatewayStatus {
     pub gateway_id: String,
     pub instance_id: String,
+    // NOTE(hand-added): 网关对外基址（对外域名）。管理面「对外地址」优先，未设回落本机 `[server] public_base_url`。
+    // 可选 —— 老版本网关不带这个键，中心侧 `#[serde(default)]` 兜底。
+    #[serde(default)]
+    pub public_base_url: Option<String>,
     pub version: String,
     pub status: String,
     pub health: String,

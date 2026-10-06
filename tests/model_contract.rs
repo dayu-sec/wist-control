@@ -81,6 +81,7 @@ use wist_control::{
     GatewayOverviewView,
     GatewayRuntimeStatus,
     GatewayStatusAccepted,
+    GatewayUpgradePlan,
     GlobalPolicyDispatch,
     HostProfile,
     InitializeGatewayViaUrl,
@@ -870,6 +871,90 @@ fn numeric_boundaries_round_trip() {
         "last_seen_at": TS,
     }));
     assert_eq!(encoded["cpu_percent"], json!(f64::MAX));
+}
+
+/// 网关对外基址（对外域名）随注册 / 状态上报带上；老发送端不带时缺省为 `None`（中心侧兜底）。
+#[test]
+fn gateway_public_base_url_is_optional_and_round_trips() {
+    // 带值：注册 / 状态上报 / 运行态视图都能带上并往返。
+    let encoded = rt::<RegisterGateway>(json!({
+        "enrollment_token": "enroll-1",
+        "instance_id": "inst-1",
+        "public_base_url": "https://gw.example.com",
+        "certificate_signing_request": "CSR",
+        "requested_at": TS,
+    }));
+    assert_eq!(encoded["public_base_url"], json!("https://gw.example.com"));
+
+    let encoded = rt::<ReportGatewayStatus>(json!({
+        "gateway_id": "gw-1",
+        "instance_id": "inst-1",
+        "public_base_url": "https://gw.example.com",
+        "version": "0.1.26",
+        "status": "online",
+        "health": "healthy",
+        "reported_at": TS,
+    }));
+    assert_eq!(encoded["public_base_url"], json!("https://gw.example.com"));
+
+    let encoded = rt::<GatewayRuntimeStatus>(json!({
+        "gateway_id": "gw-1",
+        "instance_id": "inst-1",
+        "public_base_url": "https://gw.example.com",
+        "version": "0.1.26",
+        "status": "online",
+        "health": "healthy",
+        "last_seen_at": TS,
+    }));
+    assert_eq!(encoded["public_base_url"], json!("https://gw.example.com"));
+
+    // 不带（老发送端）：仍可解，缺省为 `None`。
+    let legacy: ReportGatewayStatus = serde_json::from_value(json!({
+        "gateway_id": "gw-1",
+        "instance_id": "inst-1",
+        "version": "0.1.24",
+        "status": "online",
+        "health": "healthy",
+        "reported_at": TS,
+    }))
+    .expect("老状态报文应可解");
+    assert_eq!(legacy.public_base_url, None);
+
+    let legacy: RegisterGateway = serde_json::from_value(json!({
+        "enrollment_token": "enroll-1",
+        "instance_id": "inst-1",
+        "certificate_signing_request": "CSR",
+        "requested_at": TS,
+    }))
+    .expect("老注册报文应可解");
+    assert_eq!(legacy.public_base_url, None);
+}
+
+/// 网关升级目标可带**中心派生的制品地址**（`artifact_url`）；无对应 release 时为 `None`
+/// （执行器回落 `to_version`）。
+#[test]
+fn gateway_upgrade_plan_carries_an_optional_artifact_url() {
+    let artifact_url = "https://center.example/api/v1/releases/artifact/warp-gateway/0.1.27/warp-gateway-0.1.27.tar.gz";
+    let encoded = rt::<GatewayUpgradePlan>(json!({
+        "gateway_id": "gw-1",
+        "has_plan": true,
+        "plan_id": "plan-1",
+        "component": "warp-gateway",
+        "to_version": "0.1.27",
+        "artifact_url": artifact_url,
+    }));
+    assert_eq!(encoded["artifact_url"], json!(artifact_url));
+
+    // 无计划 / 无对应 release：字段缺省或 null 都映射为 `None`。
+    let no_plan = rt::<GatewayUpgradePlan>(json!({
+        "gateway_id": "gw-1",
+        "has_plan": false,
+        "plan_id": null,
+        "component": null,
+        "to_version": null,
+        "artifact_url": null,
+    }));
+    assert_eq!(no_plan["artifact_url"], json!(null));
 }
 
 // ── 6. 契约：缺字段 / null / 未知字段 / 未知枚举变体 ─────────────
