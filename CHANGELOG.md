@@ -3,6 +3,20 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.10.0] - 2026-10-07
+
+### 新增
+
+- **灰度发布计划的管理入参收进共享模块** `Control.RolloutApp.AdminInterface`：`CreateRolloutPlan` /
+  `ListRolloutPlans` / `ApproveRolloutPlan` / `AdvanceRolloutPlan` / `ViewRolloutPlan` —— **中心与网关
+  共用同一份**（各 app 的入口用 `input` 绑过去，入参形状只定义一次）。计划本体是 `Control.Rollout`
+  （`RolloutPlan` / `RolloutPhase` / `RolloutPlanEntry` / `RolloutPlanView`）。
+
+### 变更（不兼容）
+
+- 删除无模型对应的死骨架 `Control.InsightCenter.PlatformRelease.ApproveUpgradePlan` /
+  `AdvanceUpgradePlan`（批准/推进已由 `Control.ApproveRolloutPlan` / `Control.AdvanceRolloutPlan` 取代）。
+
 ## [0.9.0] - 2026-10-06
 
 ### 变更

@@ -11,6 +11,8 @@ pub mod gateway_app;
 pub mod insight_center;
 pub mod insight_center_app;
 pub mod protocol;
+pub mod rollout;
+pub mod rollout_app;
 pub mod storage;
 pub mod types;
 
@@ -30,5 +32,7 @@ pub use gateway_app::*;
 pub use insight_center::platform_release::*;
 pub use insight_center_app::*;
 pub use protocol::*;
+pub use rollout::*;
+pub use rollout_app::*;
 pub use storage::*;
 pub use types::*;

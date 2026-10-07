@@ -6,10 +6,9 @@
     kind = "message",
     role = "command",
     domain = "Control",
-    module = "Control.InsightCenter.PlatformRelease"
+    module = "Control.RolloutApp.AdminInterface"
 )]
-pub struct ApproveUpgradePlan {
+pub struct ViewRolloutPlan {
     pub plan_id: String,
-    pub approved_by: String,
-    pub approved_at: crate::DateTime,
+    pub requested_by: String,
 }

@@ -3,11 +3,11 @@
     Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo,
 )]
 #[jumo(
-    kind = "struct",
+    kind = "message",
+    role = "command",
     domain = "Control",
-    module = "Control.InsightCenter.PlatformRelease"
+    module = "Control.RolloutApp.AdminInterface"
 )]
-pub struct UpgradeTarget {
-    pub component: String,
-    pub target_version: String,
+pub struct ListRolloutPlans {
+    pub requested_by: String,
 }

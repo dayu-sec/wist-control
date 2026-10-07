@@ -25,6 +25,8 @@ lifecycle, gateway identity/management, and center administration — as plain `
 | `gateway_app`                   | Gateway-facing control application messages.                         |
 | `insight_center`                | Center governance (platform releases).                               |
 | `insight_center_app`            | Center admin-facing interface messages.                              |
+| `rollout`                       | Gray-release rollout plan (phases, per-target entries, view).        |
+| `rollout_app`                   | Shared rollout-plan admin interface messages (center + gateway).     |
 | `caps` / `protocol` / `storage` | Capabilities, wire protocol, and storage model.                      |
 | `types`                         | Shared primitives re-exported from `wist-shared`.                    |
 

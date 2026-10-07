@@ -30,6 +30,7 @@ use wist_control::{
     AdminViewNetworkTopology,
     AdminViewServiceTopology,
     AdminViewSoftwareVulnerabilities,
+    AdvanceRolloutPlan,
     AgentBootstrapBundle,
     AgentControlAuthProfile,
     AgentControlCommand,
@@ -56,9 +57,9 @@ use wist_control::{
     AgentPolicyBinding,
     AgentRuntimeStatus,
     AgentUpstreamMessageType,
-    ApproveUpgradePlan,
+    ApproveRolloutPlan,
     ControlCenterTrustBundle,
-    CreateUpgradePlan,
+    CreateRolloutPlan,
     CredentialBundle,
     DispatchAgentFleetCommand,
     DuplicateRegistrationDetected,
@@ -86,6 +87,7 @@ use wist_control::{
     HostProfile,
     InitializeGatewayViaUrl,
     LinkUpstream,
+    ListRolloutPlans,
     ManagementEndpointTrustBundle,
     PollControlCommands,
     PublishWarpGateway,
@@ -94,13 +96,14 @@ use wist_control::{
     RegisterGateway,
     RenewGatewayCredential,
     ReportGatewayStatus,
-    UpgradePlan,
-    UpgradePlanApproval,
-    UpgradeStep,
-    UpgradeTarget,
+    RolloutPhase,
+    RolloutPlan,
+    RolloutPlanEntry,
+    RolloutPlanView,
     VerifyGatewayCredential,
     ViewGatewayList,
     ViewGatewayManagementState,
+    ViewRolloutPlan,
     WarpGatewayInstance,
     WarpGatewayRelease,
     WistAgentdRelease,
@@ -722,38 +725,87 @@ fn app_and_admin_message_types_round_trip() {
     }));
     rt_ok::<ViewGatewayList>(json!({ "requested_by": "admin-1" }));
 
-    rt_ok::<ApproveUpgradePlan>(json!({
-        "plan_id": "plan-1",
-        "approved_by": "admin-1",
-        "approved_at": TS,
-    }));
-    rt_ok::<CreateUpgradePlan>(json!({
-        "targets": [{ "component": "agentd", "target_version": "v2" }],
-        "gateway_ids": ["gw-1"],
-        "steps": [{ "step_index": 0, "gateway_ids": ["gw-1"], "status": "pending" }],
+    rt_ok::<CreateRolloutPlan>(json!({
+        "action": "upgrade",
+        "spec": "{\"targets\":[]}",
+        "target_ids": ["gw-1"],
+        "phase_count": 3,
+        "deadline_at": TS,
+        "timeout_seconds": 900,
+        "batch_size": 0,
         "requested_by": "admin-1",
-        "requested_at": TS,
     }));
-    rt_ok::<UpgradePlan>(json!({
+    rt_ok::<ListRolloutPlans>(json!({ "requested_by": "admin-1" }));
+    rt_ok::<ApproveRolloutPlan>(json!({
         "plan_id": "plan-1",
-        "targets": [{ "component": "agentd", "target_version": "v2" }],
-        "target_count": 1,
+        "approved_by": "admin-1",
+        "requested_by": "admin-1",
+    }));
+    rt_ok::<AdvanceRolloutPlan>(json!({
+        "plan_id": "plan-1",
+        "requested_by": "admin-1",
+    }));
+    rt_ok::<ViewRolloutPlan>(json!({
+        "plan_id": "plan-1",
+        "requested_by": "admin-1",
+    }));
+    rt_ok::<RolloutPhase>(json!({
+        "phase_index": 1,
+        "target_ids": ["gw-1"],
+        "advance_rule": "manual",
         "status": "pending",
-        "created_at": TS,
-        "steps": [{ "step_index": 0, "gateway_ids": ["gw-1"], "status": "pending" }],
     }));
-    rt_ok::<UpgradePlanApproval>(json!({
+    rt_ok::<RolloutPlan>(json!({
         "plan_id": "plan-1",
-        "status": "approved",
+        "action": "upgrade",
+        "spec": "{\"targets\":[]}",
+        "deadline_at": TS,
+        "timeout_seconds": 900,
+        "phases": [{
+            "phase_index": 1,
+            "target_ids": ["gw-1"],
+            "advance_rule": "manual",
+            "status": "pending",
+        }],
+        "batch_size": 0,
+        "current_phase": 1,
+        "status": "rolling",
+        "created_by": "admin-1",
+        "created_at": TS,
         "approved_by": "admin-1",
         "approved_at": TS,
     }));
-    rt_ok::<UpgradeStep>(json!({
-        "step_index": 0,
-        "gateway_ids": ["gw-1"],
-        "status": "pending",
+    rt_ok::<RolloutPlanEntry>(json!({
+        "plan_id": "plan-1",
+        "target_id": "gw-1",
+        "work_id": "work-1",
+        "status": "dispatched",
+        "detail": null,
+        "updated_at": TS,
     }));
-    rt_ok::<UpgradeTarget>(json!({ "component": "agentd", "target_version": "v2" }));
+    rt_ok::<RolloutPlanView>(json!({
+        "plan": {
+            "plan_id": "plan-1",
+            "action": "upgrade",
+            "spec": "{}",
+            "deadline_at": TS,
+            "timeout_seconds": 900,
+            "phases": [],
+            "batch_size": 0,
+            "current_phase": 0,
+            "status": "draft",
+            "created_by": "admin-1",
+            "created_at": TS,
+        },
+        "entries": [{
+            "plan_id": "plan-1",
+            "target_id": "gw-1",
+            "work_id": null,
+            "status": "pending",
+            "detail": null,
+            "updated_at": TS,
+        }],
+    }));
     rt_ok::<PublishWarpGateway>(json!({
         "version": "v2",
         "artifact_url": "https://dl/gw",
@@ -801,24 +853,23 @@ fn empty_collections_and_strings_round_trip() {
         "agent_ids": [],
         "requested_by": "",
     }));
-    rt_ok::<CreateUpgradePlan>(json!({
-        "targets": [],
-        "gateway_ids": [],
-        "steps": [],
-        "requested_by": "",
-        "requested_at": TS,
-    }));
-    rt_ok::<UpgradePlan>(json!({
+    rt_ok::<RolloutPlan>(json!({
         "plan_id": "",
-        "targets": [],
-        "target_count": 0,
+        "action": "",
+        "spec": "",
+        "deadline_at": TS,
+        "timeout_seconds": 0,
+        "phases": [],
+        "batch_size": 0,
+        "current_phase": 0,
         "status": "",
+        "created_by": "",
         "created_at": TS,
-        "steps": [],
     }));
-    rt_ok::<UpgradeStep>(json!({
-        "step_index": 0,
-        "gateway_ids": [],
+    rt_ok::<RolloutPhase>(json!({
+        "phase_index": 0,
+        "target_ids": [],
+        "advance_rule": "",
         "status": "",
     }));
     rt_ok::<AgentControlCommandsReturned>(json!({
@@ -1061,12 +1112,13 @@ fn missing_required_field_is_rejected() {
         "缺少必填字段 last_seen_at 应报错"
     );
     assert!(
-        serde_json::from_value::<UpgradeStep>(json!({
-            "gateway_ids": [],
+        serde_json::from_value::<RolloutPhase>(json!({
+            "target_ids": [],
+            "advance_rule": "manual",
             "status": "pending",
         }))
         .is_err(),
-        "缺少必填字段 step_index 应报错"
+        "缺少必填字段 phase_index 应报错"
     );
 }
 
