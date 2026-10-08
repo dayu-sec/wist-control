@@ -3,6 +3,8 @@
 
 pub mod agent_bootstrap_bundle;
 pub use agent_bootstrap_bundle::*;
+pub mod agent_platform_package;
+pub use agent_platform_package::*;
 pub mod agent_enrollment_accepted;
 pub use agent_enrollment_accepted::*;
 pub mod agent_enrollment_auth_profile;

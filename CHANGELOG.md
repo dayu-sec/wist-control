@@ -3,6 +3,16 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.11.0] - 2026-10-08
+
+### 变更（不兼容）
+
+- **`AgentBootstrapBundle` 改为按平台托管安装包**：以单值 `install_script_url` / `agent_package_url` /
+  `agent_package_sha256` 无法描述多平台 `wist-agentd`（macOS-ARM + Linux x86_64/ARM64 三平台），
+  一个网关只能给出一个平台的包。现改为 `platforms: List<AgentPlatformPackage>`，每个平台一份
+  （`platform` = target-triple + `install_script_url` / `agent_package_url` / `agent_package_sha256`）。
+  新增结构 `Control.Agent.Enrollment.AgentPlatformPackage`。
+
 ## [0.10.0] - 2026-10-07
 
 ### 新增

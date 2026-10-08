@@ -463,9 +463,14 @@ fn agent_domain_types_round_trip() {
         "control_endpoint": "https://center.example",
         "tenant_id": "t-1",
         "bundle_id": "bundle-1",
-        "install_script_url": "https://dl/install.sh",
-        "agent_package_url": "https://dl/agent.tar.gz",
-        "agent_package_sha256": "deadbeef",
+        "platforms": [
+            {
+                "platform": "aarch64-apple-darwin",
+                "install_script_url": "https://dl/install/aarch64-apple-darwin/install.sh",
+                "agent_package_url": "https://dl/agent.tar.gz",
+                "agent_package_sha256": "deadbeef",
+            }
+        ],
         "trust_bundle": "trust-bundle",
     }));
 
@@ -478,9 +483,14 @@ fn agent_domain_types_round_trip() {
             "control_endpoint": "https://center.example",
             "tenant_id": "t-1",
             "bundle_id": "bundle-1",
-            "install_script_url": "https://dl/install.sh",
-            "agent_package_url": "https://dl/agent.tar.gz",
-            "agent_package_sha256": "deadbeef",
+            "platforms": [
+                {
+                    "platform": "x86_64-unknown-linux-musl",
+                    "install_script_url": "https://dl/install/x86_64-unknown-linux-musl/install.sh",
+                    "agent_package_url": "https://dl/agent.tar.gz",
+                    "agent_package_sha256": "deadbeef",
+                }
+            ],
             "trust_bundle": "trust-bundle",
         },
         "arm_linux_install_code": "curl arm",
