@@ -1118,6 +1118,34 @@ fn gateway_upgrade_plan_carries_multi_platform_artifacts() {
     assert_eq!(explicit_empty["artifacts"], json!(null));
 }
 
+/// `artifacts` 条目的**前向兼容**：多带未知字段被忽略（不 `deny_unknown_fields`），且不回带。
+#[test]
+fn gateway_upgrade_artifact_tolerates_an_unknown_field() {
+    let encoded = rt::<GatewayUpgradePlan>(json!({
+        "gateway_id": "gw-1",
+        "has_plan": true,
+        "plan_id": "p",
+        "component": "wist-agentd",
+        "to_version": "0.2.1",
+        "action": "push-agent-package",
+        "artifacts": [
+            {
+                "platform": "aarch64-apple-darwin",
+                "artifact_url": "https://c/a.tar.gz",
+                "artifact_sha256": "sha256:aa",
+                "future_field": { "nested": true }
+            }
+        ]
+    }));
+    let artifacts = encoded["artifacts"].as_array().expect("artifacts array");
+    assert_eq!(artifacts.len(), 1);
+    assert_eq!(artifacts[0]["platform"], json!("aarch64-apple-darwin"));
+    assert!(
+        artifacts[0].get("future_field").is_none(),
+        "未知字段不被回带：{encoded}"
+    );
+}
+
 /// 计划动作常量钉住 wire 值（中心与 `wist-gwlinkd` 共用；改值即破坏兼容）。
 #[test]
 fn rollout_action_constants_pin_the_wire_values() {
