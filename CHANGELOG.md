@@ -3,6 +3,14 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.14.0] - 2026-10-09
+
+### 变更（不兼容）
+
+- **对齐 `wist-shared` 0.2**：依赖由 `0.1` 升到 `0.2`（0.2 仅新增 `protocol` 模块，其余 API 未变）。
+  本 crate 在公开 API 里 `pub use wist_shared::{Bool, DateTime, Float, Int, Secret}`，**消费方需同样
+  升到 `wist-shared` 0.2**，否则依赖图里两版 `wist_shared`、跨边界类型对不上。
+
 ## [0.13.0] - 2026-10-09
 
 ### 新增
