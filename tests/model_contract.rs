@@ -1064,6 +1064,60 @@ fn gateway_upgrade_plan_carries_an_optional_action_and_digest() {
     assert_eq!(omitted["artifact_sha256"], json!(null));
 }
 
+/// 「Agent 包下发」（②）的**多平台**制品清单往返：每项带 平台 + 地址 + 摘要；空清单序列化时省略。
+#[test]
+fn gateway_upgrade_plan_carries_multi_platform_artifacts() {
+    let encoded = rt::<GatewayUpgradePlan>(json!({
+        "gateway_id": "gw-1",
+        "has_plan": true,
+        "plan_id": "plan-push-2",
+        "component": "wist-agentd",
+        "to_version": "0.2.1-alpha",
+        "action": "push-agent-package",
+        "artifacts": [
+            {
+                "platform": "aarch64-apple-darwin",
+                "artifact_url": "https://center.example/api/v1/releases/artifact/wist-agentd/0.2.1-alpha/wist-agentd-0.2.1-alpha-aarch64-apple-darwin.tar.gz",
+                "artifact_sha256": "sha256:aa11"
+            },
+            {
+                "platform": "x86_64-unknown-linux-musl",
+                "artifact_url": "https://center.example/api/v1/releases/artifact/wist-agentd/0.2.1-alpha/wist-agentd-0.2.1-alpha-x86_64-unknown-linux-musl.tar.gz",
+                "artifact_sha256": "sha256:bb22"
+            }
+        ]
+    }));
+    let artifacts = encoded["artifacts"].as_array().expect("artifacts array");
+    assert_eq!(artifacts.len(), 2, "多平台：两个制品都要往返：{encoded}");
+    assert_eq!(artifacts[0]["platform"], json!("aarch64-apple-darwin"));
+    assert_eq!(artifacts[1]["platform"], json!("x86_64-unknown-linux-musl"));
+    assert_eq!(artifacts[0]["artifact_sha256"], json!("sha256:aa11"));
+
+    // 缺省（无键）→ 空 vec，序列化时**省略**（`skip_serializing_if = "Vec::is_empty"`）：
+    // 老网关不会因多一个空键而误判。
+    let omitted = rt::<GatewayUpgradePlan>(json!({
+        "gateway_id": "gw-1",
+        "has_plan": true,
+        "plan_id": "plan-1",
+        "component": null,
+        "to_version": null,
+        "artifact_url": null,
+    }));
+    assert_eq!(omitted["artifacts"], json!(null));
+
+    // 显式空数组同样回落省略。
+    let explicit_empty = rt::<GatewayUpgradePlan>(json!({
+        "gateway_id": "gw-1",
+        "has_plan": true,
+        "plan_id": "plan-1",
+        "component": null,
+        "to_version": null,
+        "artifact_url": null,
+        "artifacts": [],
+    }));
+    assert_eq!(explicit_empty["artifacts"], json!(null));
+}
+
 /// 计划动作常量钉住 wire 值（中心与 `wist-gwlinkd` 共用；改值即破坏兼容）。
 #[test]
 fn rollout_action_constants_pin_the_wire_values() {

@@ -3,6 +3,16 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.13.0] - 2026-10-09
+
+### 新增
+
+- **`GatewayUpgradePlan` 增 `artifacts`（多平台制品清单）**：`Control.Gateway.Supervision` 加
+  `artifacts: List<GatewayUpgradeArtifact>`（新结构 `GatewayUpgradeArtifact { platform, artifact_url,
+  artifact_sha256 }`；空清单序列化时省略）。「agent 包下发」（发布 ②）要网关替 **Agent 机队**托管各平台的
+  `wist-agentd` 包（机队平台可能 ≠ 网关自己主机的平台），单值 `artifact_url` 无法描述；① 升级仍用单值
+  （网关本机就一个平台）。见设计 `edge/agent-package-push-to-gateways.md`。
+
 ## [0.12.0] - 2026-10-09
 
 ### 新增

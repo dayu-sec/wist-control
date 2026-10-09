@@ -26,4 +26,24 @@ pub struct GatewayUpgradePlan {
     // 见设计 `edge/agent-package-push-to-gateways.md`。
     #[serde(default)]
     pub artifact_sha256: Option<String>,
+    // NOTE(hand-added): 「agent 包下发」（②）的**多平台**制品清单：该版本**全部平台**的地址 + 摘要。
+    // ② 要网关替 **Agent 机队**托管各平台的包（机队平台可能 ≠ 网关自己主机的平台），故用列表；
+    // ① 升级仍用单值 `artifact_url`（网关本机就一个平台）。见设计 `edge/agent-package-push-to-gateways.md`。
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub artifacts: Vec<GatewayUpgradeArtifact>,
+}
+
+// NOTE(hand-added): 「Agent 包下发」（②）里的一个平台制品：平台（target-triple）+ 中心派生地址 + 期望摘要。
+#[derive(
+    Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize, ::jumo_derive::Jumo,
+)]
+#[jumo(
+    kind = "struct",
+    domain = "Control",
+    module = "Control.Gateway.Supervision"
+)]
+pub struct GatewayUpgradeArtifact {
+    pub platform: String,
+    pub artifact_url: String,
+    pub artifact_sha256: String,
 }
