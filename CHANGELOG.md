@@ -3,6 +3,17 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.12.0] - 2026-10-09
+
+### 新增
+
+- **升级目标可带计划动作与制品摘要**：`GatewayUpgradePlan` 增可选字段 **`action`**（`upgrade` /
+  `push-agent-package`，缺省 = 老中心按 `upgrade` 处理）与 **`artifact_sha256`**（`artifact_url` 的期望
+  摘要；**仅**「agent 包下发」带它，① 升级路径为空）。gwlinkd 据此分派执行器：升级走 gops，包下发环回写
+  网关包管理。见设计 `edge/agent-package-push-to-gateways.md`（发布 ②）。
+- **计划动作常量** `ACTION_UPGRADE` / `ACTION_PUSH_AGENT_PACKAGE`（`Control.Rollout`）：中心与
+  `wist-gwlinkd` **共用一份**动作字面量，避免两处漂移。
+
 ## [0.11.0] - 2026-10-08
 
 ### 变更（不兼容）

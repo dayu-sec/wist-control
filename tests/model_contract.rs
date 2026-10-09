@@ -1018,6 +1018,62 @@ fn gateway_upgrade_plan_carries_an_optional_artifact_url() {
     assert_eq!(no_plan["artifact_url"], json!(null));
 }
 
+/// 升级目标可带**计划动作**与**制品摘要**（发布 ②：agent 包下发）；缺省 / null → `None`。
+#[test]
+fn gateway_upgrade_plan_carries_an_optional_action_and_digest() {
+    let digest = "3f9a1c0d5e7b2a6489f0c1d2e3a4b5c6d7e8f9012345678abcdef0123456789";
+    let encoded = rt::<GatewayUpgradePlan>(json!({
+        "gateway_id": "gw-1",
+        "has_plan": true,
+        "plan_id": "plan-push-1",
+        "component": "wist-agentd",
+        "to_version": "0.1.9",
+        "artifact_url": "https://center.example/api/v1/releases/artifact/wist-agentd/0.1.9/wist-agentd-0.1.9-aarch64-apple-darwin.tar.gz",
+        "action": "push-agent-package",
+        "artifact_sha256": format!("sha256:{digest}"),
+    }));
+    assert_eq!(encoded["action"], json!("push-agent-package"));
+    assert_eq!(
+        encoded["artifact_sha256"],
+        json!(format!("sha256:{digest}"))
+    );
+
+    // 缺省 / null → `None`（老中心不带这两个键仍可解）。
+    let legacy = rt::<GatewayUpgradePlan>(json!({
+        "gateway_id": "gw-1",
+        "has_plan": false,
+        "plan_id": null,
+        "component": null,
+        "to_version": null,
+        "artifact_url": null,
+        "action": null,
+        "artifact_sha256": null,
+    }));
+    assert_eq!(legacy["action"], json!(null));
+    assert_eq!(legacy["artifact_sha256"], json!(null));
+
+    let omitted = rt::<GatewayUpgradePlan>(json!({
+        "gateway_id": "gw-1",
+        "has_plan": true,
+        "plan_id": "plan-1",
+        "component": null,
+        "to_version": null,
+        "artifact_url": null,
+    }));
+    assert_eq!(omitted["action"], json!(null));
+    assert_eq!(omitted["artifact_sha256"], json!(null));
+}
+
+/// 计划动作常量钉住 wire 值（中心与 `wist-gwlinkd` 共用；改值即破坏兼容）。
+#[test]
+fn rollout_action_constants_pin_the_wire_values() {
+    assert_eq!(wist_control::ACTION_UPGRADE, "upgrade");
+    assert_eq!(
+        wist_control::ACTION_PUSH_AGENT_PACKAGE,
+        "push-agent-package"
+    );
+}
+
 // ── 6. 契约：缺字段 / null / 未知字段 / 未知枚举变体 ─────────────
 
 #[test]
