@@ -14,6 +14,11 @@ pub struct GatewayRuntimeStatus {
     #[serde(default)]
     pub public_base_url: Option<String>,
     pub version: String,
+    // NOTE(hand-added): 网关宿主侧依赖工具版本（gops / gx），由状态上报带来。
+    #[serde(default)]
+    pub gops_version: Option<String>,
+    #[serde(default)]
+    pub gx_version: Option<String>,
     pub status: String,
     pub health: String,
     pub memory_bytes: Option<i64>,

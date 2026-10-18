@@ -3,6 +3,19 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.16.0] - 2026-10-18
+
+### 新增
+
+- **`GatewayRuntimeStatus` / `ReportGatewayStatus` 增 `gops_version` / `gx_version`**：
+  网关宿主侧依赖工具（装在 `$HOME/bin`，由 `wist-gwlinkd` 探测）的版本。均可选，
+  老网关 / 老 gwlinkd 不带这两个键（`serde(default)` 兜底）；中心落库并出 Prometheus
+  `gateway_gops_info` / `gateway_gx_info`。
+
+### 兼容性
+
+- 追加字段：旧中心反序列化新上报时忽略未知键；新中心读旧上报时为 `None`。
+
 ## [0.15.0] - 2026-10-18
 
 ### 新增

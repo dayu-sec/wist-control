@@ -16,6 +16,12 @@ pub struct ReportGatewayStatus {
     #[serde(default)]
     pub public_base_url: Option<String>,
     pub version: String,
+    // NOTE(hand-added): 网关宿主侧依赖工具版本（gops / gx，装在 `$HOME/bin`）。
+    // 由 gwlinkd 探测后随状态上报带来；可选，老版本不带这些键。
+    #[serde(default)]
+    pub gops_version: Option<String>,
+    #[serde(default)]
+    pub gx_version: Option<String>,
     pub status: String,
     pub health: String,
     pub memory_bytes: Option<i64>,
