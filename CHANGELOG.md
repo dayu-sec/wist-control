@@ -3,6 +3,19 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.15.0] - 2026-10-18
+
+### 新增
+
+- **`ACTION_PUSH_KNOWLEDGE_PACKAGE`（`push-knowledge-package`）**：中心把 `wist-knowledge` 包
+  交给网关知识库管理的新计划动作（与 `push-agent-package` 同一份常量，避免中心 / gwlinkd 字面量漂移）。
+- **`GatewayUpgradePlan` 增 `activate`**：知识库包录入后是否立即激活（缺省 `None` = 不激活；
+  与模型 `Control.Gateway.Supervision.GatewayUpgradePlan.activate: Bool?` 对齐）。
+
+### 兼容性
+
+- 两个变更均为**追加**：老中心不填 `activate` / 老 gwlinkd 忽略未知字段，行为不变。
+
 ## [0.14.0] - 2026-10-09
 
 ### 变更（不兼容）

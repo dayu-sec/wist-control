@@ -31,6 +31,10 @@ pub struct GatewayUpgradePlan {
     // ① 升级仍用单值 `artifact_url`（网关本机就一个平台）。见设计 `edge/agent-package-push-to-gateways.md`。
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub artifacts: Vec<GatewayUpgradeArtifact>,
+    // NOTE(hand-added): 「知识库包下发」是否在录入后**立即激活**。缺省 `None`（按不激活处理）。
+    // 只有 `push-knowledge-package` 会填它 —— 知识库是内容，录入与生效是两件事（设计 I2）。
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub activate: Option<bool>,
 }
 
 // NOTE(hand-added): 「Agent 包下发」（②）里的一个平台制品：平台（target-triple）+ 中心派生地址 + 期望摘要。

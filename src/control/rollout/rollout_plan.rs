@@ -29,3 +29,9 @@ pub struct RolloutPlan {
 pub const ACTION_UPGRADE: &str = "upgrade";
 /// Agent 包下发：中心把 `wist-agentd` 包交给网关包管理，**升不升由网关决定**（发布 ②）。
 pub const ACTION_PUSH_AGENT_PACKAGE: &str = "push-agent-package";
+/// 知识库包下发：中心把 `wist-knowledge` 包交给网关的知识库管理（录入可可选激活）。
+///
+/// 与 agent 包的差别：知识库是**内容**，不重建网关、不涉及升级；`activate` 决定录入后
+/// 是否立刻切生效指针（缺省 false —— 录入 ≠ 生效）。见设计
+/// `edge/knowledge-package-push-to-gateways.md`。
+pub const ACTION_PUSH_KNOWLEDGE_PACKAGE: &str = "push-knowledge-package";
