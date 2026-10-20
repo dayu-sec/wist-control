@@ -3,6 +3,14 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.16.2] - 2026-10-20
+
+### 新增
+
+- **`ReportGatewayUpgradeResult.task_id`**：本次任务 ID（网关 `tasks/<kind>-<task_id>-<ts>/`
+  里的那个）。同一份计划重试会换 task_id，用它才能把日志与**那一次**执行对上；
+  光有 `log_dir` 得从路径里反解，重试后容易看串。
+
 ## [0.16.1] - 2026-10-20
 
 ### 新增
