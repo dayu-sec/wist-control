@@ -3,6 +3,17 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.16.1] - 2026-10-20
+
+### 新增
+
+- **`ReportGatewayUpgradeResult` 带任务执行记录**（两个可选字段，老网关不带也能解）：
+  - `log_dir`：网关本机的任务日志目录（`tasks/<kind>-<id>-<ts>`）；
+  - `log_excerpt`：有界摘要（事件尾 + 输出尾，写入时已脱敏；失败回执才带）。
+
+  中心落库后，管理面可在计划条目上直接展开看现场，不必 SSH 到网关捞文件。
+  老网关只把 `日志: <dir>` 拼在 `detail` 里，中心继续按那个兜底解析目录。
+
 ## [0.16.0] - 2026-10-18
 
 ### 新增
