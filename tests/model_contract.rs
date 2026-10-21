@@ -991,6 +991,52 @@ fn gateway_public_base_url_is_optional_and_round_trips() {
     assert_eq!(legacy.public_base_url, None);
 }
 
+/// gwlinkd（宿主侧常驻）**自身**版本随状态上报带上；它与 `version`（网关容器版本）是两回事，
+/// 老 gwlinkd 不带这个键时缺省为 `None`。
+#[test]
+fn gateway_gwlinkd_version_is_optional_and_round_trips() {
+    let encoded = rt::<ReportGatewayStatus>(json!({
+        "gateway_id": "gw-1",
+        "instance_id": "inst-1",
+        "version": "0.1.26",
+        "gops_version": "2.4.0",
+        "gx_version": "0.17.0",
+        "gwlinkd_version": "0.16.1",
+        "status": "online",
+        "health": "healthy",
+        "reported_at": TS,
+    }));
+    assert_eq!(encoded["gwlinkd_version"], json!("0.16.1"));
+    assert_eq!(
+        encoded["version"],
+        json!("0.1.26"),
+        "gwlinkd 自己的版本不能顶替网关容器版本"
+    );
+
+    let encoded = rt::<GatewayRuntimeStatus>(json!({
+        "gateway_id": "gw-1",
+        "instance_id": "inst-1",
+        "version": "0.1.26",
+        "gwlinkd_version": "0.16.1",
+        "status": "online",
+        "health": "healthy",
+        "last_seen_at": TS,
+    }));
+    assert_eq!(encoded["gwlinkd_version"], json!("0.16.1"));
+
+    // 老 gwlinkd 不带这个键：仍可解，缺省为 None（中心页面显示「—」）。
+    let legacy: ReportGatewayStatus = serde_json::from_value(json!({
+        "gateway_id": "gw-1",
+        "instance_id": "inst-1",
+        "version": "0.1.24",
+        "status": "online",
+        "health": "healthy",
+        "reported_at": TS,
+    }))
+    .expect("老状态报文应可解");
+    assert_eq!(legacy.gwlinkd_version, None);
+}
+
 /// 网关升级目标可带**中心派生的制品地址**（`artifact_url`）；无对应 release 时为 `None`
 /// （执行器回落 `to_version`）。
 #[test]

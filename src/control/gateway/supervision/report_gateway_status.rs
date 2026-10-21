@@ -22,6 +22,10 @@ pub struct ReportGatewayStatus {
     pub gops_version: Option<String>,
     #[serde(default)]
     pub gx_version: Option<String>,
+    // NOTE(hand-added): gwlinkd（宿主侧常驻）**自身**版本 —— 上面那个 `version` 是网关（容器）的。
+    // 可选，老 gwlinkd 不带这个键（中心显示「—」，不冒充）。
+    #[serde(default)]
+    pub gwlinkd_version: Option<String>,
     pub status: String,
     pub health: String,
     pub memory_bytes: Option<i64>,

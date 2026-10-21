@@ -19,6 +19,9 @@ pub struct GatewayRuntimeStatus {
     pub gops_version: Option<String>,
     #[serde(default)]
     pub gx_version: Option<String>,
+    // NOTE(hand-added): gwlinkd（宿主侧常驻）**自身**版本 —— 上面那个 `version` 是网关（容器）的。
+    #[serde(default)]
+    pub gwlinkd_version: Option<String>,
     pub status: String,
     pub health: String,
     pub memory_bytes: Option<i64>,
