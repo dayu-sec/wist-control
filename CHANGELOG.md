@@ -3,6 +3,25 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.18.0] - 2026-10-25
+
+### 新增
+
+- **网关业务身份（租户）绑定契约**：网关可以被绑定到一个客户/租户，并把该身份带到数据面。
+  - `GatewayInitialConfig` / `ReportGatewayStatus` 增 `tenant_id` / `binding_revision`（可选），
+    首次接入即可带上身份，后续心跳持续回显。
+  - `GatewayStatusAccepted` 增 `desired_business_identity`（新增 `DesiredBusinessIdentity` 类型）：
+    中心在回执里告诉网关**应该**是什么身份 —— 命令丢失、网关离线或重启后都能自行补齐。
+  - `GatewayCustomerBinding` 增 `revision` / `applied_revision` / `applied_at` / `last_error`，
+    能区分「已下发」与「已生效」，并记录失败原因。
+- **换绑审计**：新增 `AdminGetGatewayBindingHistory` 与 `GatewayBindingAuditEvent`，
+  记录谁在什么时候把网关绑到哪个客户（换绑保留旧值）。
+
+### 兼容性
+
+- 新增字段均可选（`serde(default)`），旧网关/旧中心互不影响。
+- **`GatewayStatusAccepted` 多了一个公开字段**：用结构体字面量构造它的下游需要补字段（升级本版本即可）。
+
 ## [0.17.0] - 2026-10-21
 
 ### 新增
