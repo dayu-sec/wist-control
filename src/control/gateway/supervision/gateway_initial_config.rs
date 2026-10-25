@@ -14,4 +14,9 @@ pub struct GatewayInitialConfig {
     pub server_tls_required: bool,
     pub protocol_version: String,
     pub enrollment_token_id: String,
+    // NOTE(hand-added): 首次接入时随配置带出业务身份；老 gwlinkd 忽略这两个键。
+    #[serde(default)]
+    pub tenant_id: Option<String>,
+    #[serde(default)]
+    pub binding_revision: Option<i64>,
 }

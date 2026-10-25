@@ -26,6 +26,12 @@ pub struct ReportGatewayStatus {
     // 可选，老 gwlinkd 不带这个键（中心显示「—」，不冒充）。
     #[serde(default)]
     pub gwlinkd_version: Option<String>,
+    // NOTE(hand-added): 业务身份（数据面字段名 `tenant_id`；Center 绑定表存 `customer_id`）。
+    // 可选 —— 老 gwlinkd 不带这些键，中心侧 `#[serde(default)]` 兜底。
+    #[serde(default)]
+    pub tenant_id: Option<String>,
+    #[serde(default)]
+    pub binding_revision: Option<i64>,
     pub status: String,
     pub health: String,
     pub memory_bytes: Option<i64>,

@@ -5,6 +5,8 @@ pub mod gateway_initial_config;
 pub use gateway_initial_config::*;
 pub mod gateway_status_accepted;
 pub use gateway_status_accepted::*;
+pub mod desired_business_identity;
+pub use desired_business_identity::*;
 pub mod gateway_runtime_status;
 pub use gateway_runtime_status::*;
 pub mod gateway_instance;

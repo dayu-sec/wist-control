@@ -61,6 +61,7 @@ use wist_control::{
     ControlCenterTrustBundle,
     CreateRolloutPlan,
     CredentialBundle,
+    DesiredBusinessIdentity,
     DispatchAgentFleetCommand,
     DuplicateRegistrationDetected,
     GatewayClientCertificate,
@@ -316,6 +317,18 @@ fn gateway_domain_types_round_trip() {
         "gateway_id": "gw-1",
         "instance_id": "inst-1",
         "accepted_at": TS,
+    }));
+
+    // 状态回执带**中心期望的业务身份**（命令丢失 / 离线补偿，设计 §11.1）。
+    rt_ok::<DesiredBusinessIdentity>(json!({
+        "tenant_id": "tenant-acme",
+        "revision": 2,
+    }));
+    rt_ok::<GatewayStatusAccepted>(json!({
+        "gateway_id": "gw-1",
+        "instance_id": "inst-1",
+        "accepted_at": TS,
+        "desired_business_identity": { "tenant_id": "tenant-acme", "revision": 2 },
     }));
 
     rt_ok::<GatewayCustomerBinding>(json!({
@@ -1252,6 +1265,25 @@ fn optional_fields_missing_or_null_yield_none() {
     }))
     .expect("initialized_at 缺省应可反序列化");
     assert!(decoded.initialized_at.is_none());
+
+    // 旧中心不带 `desired_business_identity`：新 gwlinkd 必须能忍（不报错、无期望值）。
+    let decoded: GatewayStatusAccepted = serde_json::from_value(json!({
+        "gateway_id": "gw-1",
+        "instance_id": "inst-1",
+        "accepted_at": TS,
+    }))
+    .expect("desired_business_identity 缺省应可反序列化");
+    assert!(decoded.desired_business_identity.is_none());
+
+    // 旧形状的绑定（无 revision）：默认 1（与 store 侧一致；`0` 会让任何 `>=` 比较恒真）。
+    let decoded: GatewayCustomerBinding = serde_json::from_value(json!({
+        "gateway_id": "gw-1",
+        "customer_id": "tenant-a",
+        "status": "bound",
+        "bound_at": TS,
+    }))
+    .expect("revision 缺省应可反序列化");
+    assert_eq!(decoded.revision, 1);
 
     let decoded: ControlCenterTrustBundle = serde_json::from_value(json!({
         "trust_bundle_id": "trust-1",
