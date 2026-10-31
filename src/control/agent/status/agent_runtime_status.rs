@@ -13,4 +13,12 @@ pub struct AgentRuntimeStatus {
     pub memory_bytes: Option<i64>,
     pub cpu_percent: Option<f64>,
     pub admin_latency_ms: Option<i64>,
+    /// 机器身份：中心页要能回答“这是哪台机器”。
+    ///
+    /// 来自网关注册表的机器画像；**旧版生产者不报时为 `None`**（不是空串，也不是“没有机器”）。
+    /// 加性字段：老消费者忽略它们即可。
+    pub node_id: Option<String>,
+    pub hostname: Option<String>,
+    /// 形如 `en0 192.168.1.5/24`；`None` / 空表 = 还没报过 / 确实没有地址。
+    pub ip_addresses: Option<Vec<String>>,
 }

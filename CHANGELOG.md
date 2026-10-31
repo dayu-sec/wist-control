@@ -3,6 +3,20 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.19.0] - 2026-10-31
+
+### 新增
+
+- **`AgentRuntimeStatus` 扩机器身份三字段**：`node_id` / `hostname` / `ip_addresses`（均可选）。
+  中心「网关详情 → Agent 状态」要能回答“这是哪台机器”。数据源是网关注册表的机器画像，
+  **不需要 agentd 配合**；旧生产者不报时为 `null`。
+
+### 兼容性
+
+- 三个字段全部可选（`Option`）：旧网关 / 旧 gwlinkd 上报、旧中心落库都不受影响。
+- **用结构体字面量构造 `AgentRuntimeStatus` 的下游需要补字段**（升级本版本即可）：
+  `wist-gateway`（读投影）、`wist-center`（落库读出）。
+
 ## [0.18.0] - 2026-10-25
 
 ### 新增
