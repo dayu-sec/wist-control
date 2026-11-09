@@ -27,4 +27,13 @@ pub struct AgentRuntimeStatus {
     /// 而不是显示成「这台机器什么数据都没有」。加性字段：老消费者忽略即可。
     #[serde(default)]
     pub data_manifest: Option<super::AgentDataManifest>,
+    /// 最近几条调查任务的状态（新 → 旧，最多 3 条、7 天内）。
+    ///
+    /// 与 `data_manifest` 分开：清单答「有什么数据」，这里答「这条命令跑到哪了」，
+    /// 生命周期与保留期不同。旧版生产者不报 = 空表，不代表「没有在跑的调查」。
+    #[serde(
+        default,
+        deserialize_with = "super::agent_investigation_task::deserialize_vec_or_null"
+    )]
+    pub investigations: Vec<super::AgentInvestigationTask>,
 }

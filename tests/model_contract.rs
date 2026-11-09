@@ -1543,3 +1543,99 @@ fn agent_data_manifest_round_trips_and_is_optional() {
         json!(1)
     );
 }
+
+/// 调查任务状态随 `AgentRuntimeStatus` 往返；缺字段 = 空表（不是「没有在跑的调查」）。
+#[test]
+fn agent_investigation_tasks_round_trip_and_default_to_empty() {
+    // 老生产者不报 → 字段缺失仍可解析，得到空表而不是报错。
+    let without = rt::<AgentRuntimeStatus>(json!({
+        "version": "v",
+        "health": "h",
+        "instance_id": "i",
+        "agent_id": "a",
+        "status": "s",
+        "last_seen_at": TS,
+    }));
+    assert_eq!(without["investigations"], json!([]));
+
+    // `null` 也当空表：一个字段的脏值不能拖垮整份机队上报。
+    let null = rt::<AgentRuntimeStatus>(json!({
+        "version": "v",
+        "health": "h",
+        "instance_id": "i",
+        "agent_id": "a",
+        "status": "s",
+        "last_seen_at": TS,
+        "investigations": null,
+    }));
+    assert_eq!(null["investigations"], json!([]));
+
+    let encoded = rt::<AgentRuntimeStatus>(json!({
+        "version": "v",
+        "health": "h",
+        "instance_id": "i",
+        "agent_id": "a",
+        "status": "s",
+        "last_seen_at": TS,
+        "investigations": [
+            {
+                "command_id": "cmd-1759",
+                "topic": "disk",
+                "requested_at": TS,
+                "claimed_at": TS,
+                "acked_at": null,
+                "outcome": null,
+                "detail": "已取走，扫描中（最长 120s）",
+            },
+            {
+                "command_id": "cmd-1700",
+                "topic": "load",
+                "requested_at": TS,
+                "claimed_at": TS,
+                "acked_at": TS,
+                "outcome": "succeeded",
+                "detail": "load: 无异常",
+            },
+        ],
+    }));
+    let tasks = encoded["investigations"].as_array().expect("array");
+    assert_eq!(tasks.len(), 2);
+    assert_eq!(tasks[0]["command_id"], json!("cmd-1759"));
+    // 未回执 = null；不得被填成 succeeded。
+    assert!(tasks[0]["acked_at"].is_null());
+    assert!(tasks[0]["outcome"].is_null());
+    assert_eq!(tasks[1]["outcome"], json!("succeeded"));
+
+    // 可字段真的可省：只要 `command_id` / `topic` / `requested_at` 在就能解。
+    let minimal = rt::<AgentRuntimeStatus>(json!({
+        "version": "v",
+        "health": "h",
+        "instance_id": "i",
+        "agent_id": "a",
+        "status": "s",
+        "last_seen_at": TS,
+        "investigations": [{ "command_id": "cmd_min", "topic": "disk", "requested_at": TS }],
+    }));
+    let task = &minimal["investigations"][0];
+    assert!(task["claimed_at"].is_null());
+    assert!(task["acked_at"].is_null());
+    assert!(task["outcome"].is_null());
+    assert!(task["detail"].is_null());
+
+    // 未知字段（更新的网关加了列）不能把旧中心打挂。
+    let tolerant = rt::<AgentRuntimeStatus>(json!({
+        "version": "v",
+        "health": "h",
+        "instance_id": "i",
+        "agent_id": "a",
+        "status": "s",
+        "last_seen_at": TS,
+        "investigations": [{
+            "command_id": "cmd_x",
+            "topic": "disk",
+            "requested_at": TS,
+            "priority": "high",
+        }],
+    }));
+    assert_eq!(tolerant["investigations"][0]["command_id"], json!("cmd_x"));
+}

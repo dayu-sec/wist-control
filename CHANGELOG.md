@@ -3,6 +3,27 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.21.0] - 2026-11-09
+
+### 新增
+
+- **`AgentRuntimeStatus` 增加 `investigations`（调查任务状态）**：网关可以随 Agent 状态
+  一起上报「最近几条调查命令跑到哪了」——`command_id` / `topic` / 请求、接单、回执时刻 /
+  `outcome` / 一行 `detail`，最多 3 条、7 天内，新 → 旧。正文不在这里（在证据库，
+  按 `command_id` 取）。
+
+### 为什么与 `data_manifest.investigations` 分开
+
+- `AgentInvestigationEntry` 答「这台机器有什么报告」（网关读本机报告目录的兜底视图）；
+  本字段答「这条命令跑到哪了」——在飞的任务还没有报告，但状态已经有了。
+  两者的生命周期、保留期与数据源都不同，合在一起会互相污染。
+
+### 兼容性
+
+- `investigations` 缺省为空表：旧网关 / 旧 gwlinkd 不报即为空，旧中心忽略未知字段。
+- **用结构体字面量构造 `AgentRuntimeStatus` 的下游需要补字段**（升级本版本即可）：
+  `wist-gateway`、`wist-center`、`wist-gwlinkd`。
+
 ## [0.20.0] - 2026-11-09
 
 ### 新增

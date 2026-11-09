@@ -11,5 +11,7 @@ pub mod agent_collection_entry;
 pub use agent_collection_entry::*;
 pub mod agent_investigation_entry;
 pub use agent_investigation_entry::*;
+pub mod agent_investigation_task;
+pub use agent_investigation_task::*;
 pub mod agent_data_manifest;
 pub use agent_data_manifest::*;
