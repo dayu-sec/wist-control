@@ -1486,3 +1486,60 @@ fn hand_written_types_derive_equality_and_clone() {
     assert_eq!(value, cloned, "Clone 后应相等");
     assert!(!format!("{value:?}").is_empty(), "应实现 Debug");
 }
+
+/// 数据清单（采集授权 + 调查数据）随 `AgentRuntimeStatus` 往返；缺字段 = `None`。
+#[test]
+fn agent_data_manifest_round_trips_and_is_optional() {
+    // 老生产者不报 → 字段缺失仍可解析。
+    let without = rt::<AgentRuntimeStatus>(json!({
+        "version": "v",
+        "health": "h",
+        "instance_id": "i",
+        "agent_id": "a",
+        "status": "s",
+        "last_seen_at": TS,
+    }));
+    assert!(without.get("data_manifest").is_none_or(Value::is_null));
+
+    let encoded = rt::<AgentRuntimeStatus>(json!({
+        "version": "v",
+        "health": "h",
+        "instance_id": "i",
+        "agent_id": "a",
+        "status": "s",
+        "last_seen_at": TS,
+        "data_manifest": {
+            "collected_at": TS,
+            "collection": [{
+                "family": "HostMetrics",
+                "work_id": "work-a-HostMetrics",
+                "status": "active",
+                "plan_version": 3,
+                "acknowledged_version": 3,
+                "collection_status": "ok",
+                "collection_detail": null,
+                "inputs": [{ "kind": "MetricInterval", "target": "15s" }],
+            }],
+            "investigations": [{
+                "command_id": "cmd-1",
+                "topic": "disk",
+                "observed_at": TS,
+                "overall": "warn",
+                "verdict": "Warn",
+                "findings_ok": 2,
+                "findings_warn": 1,
+                "findings_fail": 0,
+                "findings_unknown": 0,
+                "judged": true,
+            }],
+        },
+    }));
+    assert_eq!(
+        encoded["data_manifest"]["collection"][0]["family"],
+        json!("HostMetrics")
+    );
+    assert_eq!(
+        encoded["data_manifest"]["investigations"][0]["findings_warn"],
+        json!(1)
+    );
+}

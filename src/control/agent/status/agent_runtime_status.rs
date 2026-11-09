@@ -21,4 +21,10 @@ pub struct AgentRuntimeStatus {
     pub hostname: Option<String>,
     /// 形如 `en0 192.168.1.5/24`；`None` / 空表 = 还没报过 / 确实没有地址。
     pub ip_addresses: Option<Vec<String>>,
+    /// 数据清单：采集授权 + 调查数据（网关从工作授权、agentd 本机视图与调查报告派生）。
+    ///
+    /// `None` = 旧版生产者不报 —— 中心页据此显示「该网关还没有上报数据清单」，
+    /// 而不是显示成「这台机器什么数据都没有」。加性字段：老消费者忽略即可。
+    #[serde(default)]
+    pub data_manifest: Option<super::AgentDataManifest>,
 }

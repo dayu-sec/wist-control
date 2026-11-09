@@ -3,6 +3,21 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.20.0] - 2026-11-09
+
+### 新增
+
+- **`AgentRuntimeStatus` 增加 `data_manifest`（Agent 数据清单）**：网关可以随 Agent 状态
+  一起上报「采集授权 + 调查数据」。采集段是网关自己的授权台账（面 / 版本 / 来源），
+  实测段是 agentd 既有状态心跳里的采集结论，调查段是网关报告目录里的报告摘要
+  （最多 20 条，不含正文）。
+
+### 兼容性
+
+- `data_manifest` 可空：旧网关 / 旧 gwlinkd 不报时为 `null`；旧中心忽略未知字段，不拒收。
+- **用结构体字面量构造 `AgentRuntimeStatus` 的下游需要补字段**（升级本版本即可）：
+  `wist-gateway`、`wist-center`、`wist-gwlinkd`。
+
 ## [0.19.0] - 2026-10-31
 
 ### 新增
