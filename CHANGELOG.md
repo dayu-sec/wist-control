@@ -3,6 +3,27 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.22.0] - 2026-11-10
+
+### 新增（采集状态多字段）
+
+- `AgentCollectionEntry` 新增 `collection_prerequisites` / `collection_result` /
+  `collection_reasons`（`Vec<AgentCollectionReason>`），与 `wist-contracts 0.11.0`
+  的 `AgentLocalCollection` 一一对应；网关透传、管理面展示同一套语义。
+- 新增 `AgentCollectionReason { kind, subject, detail }`。
+- `collection_status` / `collection_detail` 标记为**兼容字段**：网关仍填旧值，
+  消费方以 `collection_result` 为准。
+
+### 为什么
+
+- 单一 `status` 分不清「不满足前置条件」与「采失败」，页面只能把缺 `smartctl`
+  这种待就绪情况显示成红色失败。
+
+### 兼容性
+
+- 新字段均可选，旧消费方忽略；用结构体字面量构造 `AgentCollectionEntry` 的下游
+  （`wist-gateway`、`wist-center`）需要补字段，升级本版本即可。
+
 ## [0.21.0] - 2026-11-09
 
 ### 新增
