@@ -3,6 +3,27 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.23.0] - 2026-11-12
+
+### 新增（调查授权 / 能力上报）
+
+- `AgentDataManifest` 增加两个**加性**字段，随 Agent 状态心跳由网关上报：
+  - `investigation_granted: Option<Vec<String>>` —— 这台机器**实际开**的调查面
+    （网关上界 ∩ 本机 grant）；`None` = 旧网关未上报，`Some([])` = 确实一个面都没开。
+  - `investigation_capabilities: Option<Vec<String>>` —— agentd 自报的能力面
+    （`InvestigationCapabilities.surfaces`）；`None` = agent 还没上报，不等于「一个都不会」。
+
+### 为什么
+
+- 中心开放面要回答「这台主机开了哪些调查授权」，必须把「没上报」和「全关」分开；
+  用空的 `Vec` 表达前者会让第三方误判成「平台不支持」。
+
+### 兼容性
+
+- 两个字段都是 `Option` + `#[serde(default)]`：旧消费方忽略，旧生产方不报时中心
+  返回 `grant_reported=false`。用结构体字面量构造 `AgentDataManifest` 的下游
+  （`wist-gateway` 与测试）需要补字段。
+
 ## [0.22.0] - 2026-11-10
 
 ### 新增（采集状态多字段）

@@ -16,4 +16,15 @@ pub struct AgentDataManifest {
     pub collection: Vec<AgentCollectionEntry>,
     /// 调查数据（最近若干份报告的摘要，新 → 旧）。
     pub investigations: Vec<AgentInvestigationEntry>,
+    /// 这台机器**实际开**的调查面（网关上界 ∩ 本机 grant）。
+    ///
+    /// `None` = 生产方（旧网关）还没上报；`Some([])` = 确实一个面都没开。
+    /// 中心开放面据此回答「这台主机开了哪些调查授权」，不能把「没上报」当成「全关」。
+    #[serde(default)]
+    pub investigation_granted: Option<Vec<String>>,
+    /// agent 自报的调查能力面（`InvestigationCapabilities.surfaces`）。
+    ///
+    /// `None` = agent 还没上报能力（旧 agentd / 刚升级还没心跳）；不等于「一个都不会」。
+    #[serde(default)]
+    pub investigation_capabilities: Option<Vec<String>>,
 }
