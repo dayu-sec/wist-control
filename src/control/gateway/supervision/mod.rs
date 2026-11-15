@@ -1,6 +1,20 @@
 // @jumo generated
 // Model module: Control.Gateway.Supervision
 
+// NOTE(hand-added): `wp_event_id` 的 10 bit 实例段（wparse 的 `WP_INS_ID`）。
+// 取值区间来自上游契约（`wp-examples/core/instance_id`）：`instance_id - 100` 占 0..=1023，
+// 所以 100..=1123 是全部可用车道。**多站点汇到同一个中心时必须互不相同**，
+// 否则同一秒发号会产重复 ID；越界 / 非数字会让 wparse 启动失败（有意的 fail-closed）。
+pub const WP_INS_ID_MIN: i64 = 100;
+pub const WP_INS_ID_MAX: i64 = 1123;
+/// 未设置时 wparse 自己回退到 100（并打 WARN）；模型侧缺省值与它对齐。
+pub const WP_INS_ID_DEFAULT: i64 = 100;
+
+/// 是否是合法的 `wp_ins_id`（纯函数，中心与网关共用同一口径）。
+pub fn is_valid_wp_ins_id(value: i64) -> bool {
+    (WP_INS_ID_MIN..=WP_INS_ID_MAX).contains(&value)
+}
+
 pub mod gateway_initial_config;
 pub use gateway_initial_config::*;
 pub mod gateway_status_accepted;

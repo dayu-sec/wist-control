@@ -3,6 +3,36 @@
 本文件记录 `wist-control` 的所有重要变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.24.0] - 2026-11-15
+
+### 新增（网关绑定的 wparse 实例段）
+
+- `AdminBindGatewayCustomer` / `GatewayCustomerBinding` 增加 `wp_ins_id`：
+  wparse 事件号 `wp_event_id` 的 10 bit 实例段（`100..=1123`）。
+- 新增 `AdminReleaseGatewayWpInsId`：显式释放已归档网关的实例号；
+  `GatewayCustomerBinding` 增加 `wp_ins_id_released_at` / `wp_ins_id_released_by`
+  （两个字段都为空 = 仍占用）。
+- `GatewayInitialConfig` / `DesiredBusinessIdentity` 增加可选 `wp_ins_id`：
+  首次接入与状态回执补偿都会带出，旧网关忽略。
+- 新增 `WP_INS_ID_MIN` / `WP_INS_ID_MAX` / `WP_INS_ID_DEFAULT` 与
+  `is_valid_wp_ins_id()`，中心与网关共用同一取值口径。
+
+### 为什么
+
+- `wp_event_id` 的布局是 `秒 | 实例 | 每秒计数器`，实例段由 `WP_INS_ID` 决定。
+  多站点把数据汇到同一个中心时，实例号相同会在同一秒发生产重复 ID；中心是唯一知道
+  「有哪些站点」的地方，绑定客户时一并分配车道最不容易漏。
+
+### 兼容性
+
+- `AdminBindGatewayCustomer.wp_ins_id` **必填**：直接构造该消息的下游需要补字段；
+  HTTP 面由 `wist-center` 的请求体校验兜底。
+- `GatewayCustomerBinding.wp_ins_id` 带 `serde(default)`（`100`），旧数据可反序列化。
+- `GatewayCustomerBinding.wp_ins_id_released_at` / `wp_ins_id_released_by` 为 `Option`，
+  旧数据反序列化为 `None`（视为仍占用）。
+- `GatewayInitialConfig` / `DesiredBusinessIdentity` 的 `wp_ins_id` 为 `Option`：
+  旧消费方忽略；旧生产方不填时网关不动现场已有的实例号。
+
 ## [0.23.0] - 2026-11-12
 
 ### 新增（调查授权 / 能力上报）

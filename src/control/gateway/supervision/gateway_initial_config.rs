@@ -19,4 +19,8 @@ pub struct GatewayInitialConfig {
     pub tenant_id: Option<String>,
     #[serde(default)]
     pub binding_revision: Option<i64>,
+    // NOTE(hand-added): wparse 事件号的实例段（`WP_INS_ID`）—— 首次接入就带出去，
+    // 网关落地后不必等一次 `bind-tenant` 命令。老 gwlinkd 忽略。
+    #[serde(default)]
+    pub wp_ins_id: Option<i64>,
 }

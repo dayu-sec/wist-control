@@ -22,6 +22,7 @@ use wist_control::{
     AdminGetAgentInstallCode,
     AdminListGatewayStatus,
     AdminQueryHostInventory,
+    AdminReleaseGatewayWpInsId,
     AdminShowAgentRuntimeStatus,
     AdminShowGatewayStatus,
     AdminViewEffectiveResponsibility,
@@ -323,6 +324,7 @@ fn gateway_domain_types_round_trip() {
     rt_ok::<DesiredBusinessIdentity>(json!({
         "tenant_id": "tenant-acme",
         "revision": 2,
+        "wp_ins_id": 100,
     }));
     rt_ok::<GatewayStatusAccepted>(json!({
         "gateway_id": "gw-1",
@@ -336,6 +338,17 @@ fn gateway_domain_types_round_trip() {
         "customer_id": "cust-1",
         "status": "active",
         "bound_at": TS,
+        "wp_ins_id": 107,
+    }));
+    // 已释放：两个新键可缺省（旧数据），带上时原样往返。
+    rt_ok::<GatewayCustomerBinding>(json!({
+        "gateway_id": "gw-1",
+        "customer_id": "cust-1",
+        "status": "released",
+        "bound_at": TS,
+        "wp_ins_id": 107,
+        "wp_ins_id_released_at": TS,
+        "wp_ins_id_released_by": "admin-1",
     }));
 
     rt_ok::<LinkUpstream>(json!({ "gateway_id": "gw-1", "requested_at": TS }));
@@ -701,9 +714,14 @@ fn app_and_admin_message_types_round_trip() {
     }));
     rt_ok::<QueryGatewayInitializationStatus>(json!({ "gateway_id": "gw-1" }));
 
+    rt_ok::<AdminReleaseGatewayWpInsId>(json!({
+        "gateway_id": "gw-1",
+        "requested_by": "admin-1",
+    }));
     rt_ok::<AdminBindGatewayCustomer>(json!({
         "gateway_id": "gw-1",
         "customer_id": "cust-1",
+        "wp_ins_id": 100,
         "requested_by": "admin-1",
     }));
     rt_ok::<AdminCreateGatewayInstance>(json!({
@@ -1284,6 +1302,10 @@ fn optional_fields_missing_or_null_yield_none() {
     }))
     .expect("revision 缺省应可反序列化");
     assert_eq!(decoded.revision, 1);
+    // 旧绑定没存过实例号：缺省与 wparse / 网关栈的默认值对齐（100）。
+    assert_eq!(decoded.wp_ins_id, 100);
+    assert!(decoded.wp_ins_id_released_at.is_none());
+    assert!(decoded.wp_ins_id_released_by.is_none());
 
     let decoded: ControlCenterTrustBundle = serde_json::from_value(json!({
         "trust_bundle_id": "trust-1",

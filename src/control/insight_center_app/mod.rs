@@ -5,6 +5,8 @@ pub mod admin_bind_gateway_customer;
 pub use admin_bind_gateway_customer::*;
 pub mod admin_create_gateway_instance;
 pub use admin_create_gateway_instance::*;
+pub mod admin_release_gateway_wp_ins_id;
+pub use admin_release_gateway_wp_ins_id::*;
 pub mod admin_dispatch_global_policy;
 pub use admin_dispatch_global_policy::*;
 pub mod admin_gateway_list_returned;
